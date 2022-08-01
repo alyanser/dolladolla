@@ -6,29 +6,28 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 def click_on_earn_pages_button():
 
-	try:
-		driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
-		return True
-	except:
-		driver.refresh()
-		return False
+	for _ in range(5):
+
+		try:
+			driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
+			return True
+		except:
+			driver.refresh()
+
+	driver.back()
+	return False
 
 def twitter_follows():
 	print("twitter follows in process...")
 	driver.find_element(By.CSS_SELECTOR, 'a[title="Earn Credits By Twitter Follows"]').click()
 
 	while True:
-		tries = 0
 
-		while not click_on_earn_pages_button() and tries < 5:
-			tries = tries + 1
-
-		if tries == 5:
-			print("cannot proceed with the current action. possibly the limit is reached")
-			driver.back() # test this first
+		if not click_on_earn_pages_button():
 			return
 
 		try:
+
 			driver.switch_to.window(driver.window_handles[1])
 		except:
 			print("something went wrong. new window wasn't opened")
@@ -49,7 +48,6 @@ def twitter_follows():
 			pass
 
 		time.sleep(5)
-		actions = ActionChains(driver)
 		actions.send_keys(Keys.RETURN)
 		actions.perform()
 		time.sleep(5)
@@ -59,20 +57,26 @@ def twitter_follows():
 		driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]').click()
 		print("Action completed")
 
-def twitter_likes():
-	print("twitter likes in process...")
-	pass
-
 def twitter_retweets():
 	print("twitter retweets in process...")
-	pass
+	driver.find_element(By.CSS_SELECTOR, 'a[title="Earn Credits By Twitter Retweet"]').click()
+
+	while True:
+
+		if not click_on_earn_pages_button():
+			return
+
+		driver.find_element(By.CSS_SELECTOR, 'div[aria-label="Retweet"]').click()
+		return
 
 def insta_likes():
 	print("instagram likes in process...")
-	pass
 
 def insta_follows():
 	print("instagram follows in process...")
+
+def twitter_likes():
+	print("twitter likes in process...")
 	pass
 
 like_username = "testingsecondacc"
@@ -87,10 +91,11 @@ insta_password = ""
 if __name__ == '__main__':
 	print("starting the bot...")
 	options = webdriver.FirefoxOptions()
-	options.add_argument("--headless")
+	# options.add_argument("--headless")
 
 	driver = webdriver.Firefox(options = options)
 	driver.implicitly_wait(50)
+	actions = ActionChains(driver)
 
 	print("loading the webpage...")
 
@@ -116,6 +121,10 @@ if __name__ == '__main__':
 	while True:
 
 		try:
-			twitter_follows()
+			# twitter_follows()
+			twitter_retweets()
+		except KeyboardInterrupt:
+			exit(1)
 		except:
-			print("something went wrong while performing an action. trying again")
+			# print("something went wrong while performing an action. trying again")
+			raise
