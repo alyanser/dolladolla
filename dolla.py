@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
-def click_on_earn_pages_button() -> bool:
+def click_on_earn_pages_button():
 
 	try:
 		driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
@@ -14,7 +14,7 @@ def click_on_earn_pages_button() -> bool:
 		return False
 
 def twitter_follows():
-	print("clicking on earn credits button")
+	print("twitter follows in process...")
 	driver.find_element(By.CSS_SELECTOR, 'a[title="Earn Credits By Twitter Follows"]').click()
 
 	while True:
@@ -59,22 +59,40 @@ def twitter_follows():
 		driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]').click()
 		print("Action completed")
 
+def twitter_likes():
+	pass
+
+def twitter_retweets():
+	pass
+
+def insta_likes():
+	pass
+
+def insta_follows():
+	pass
+
 like_username = "testingsecondacc"
 like_password = "123123.Tt"
 
 twitter_username = "riseld02"
 twitter_password = "123123.T"
-like_url = 'https://ww.lie4like.org/login'
+like_url = 'https://www.like4like.org/login'
 
 if __name__ == '__main__':
+	print("starting the bot...")
 	options = webdriver.FirefoxOptions()
 	options.add_argument("--headless")
 
 	driver = webdriver.Firefox(options = options)
 	driver.implicitly_wait(50)
 
-	driver.fullscreen_window()
-	driver.get(like_url)
+	print("loading the webpage...")
+
+	try:
+		driver.get(like_url)
+	except:
+		print("could not load the webpage. check your connection and try again")
+		exit(1)
 
 	username = driver.find_element(By.ID, "username")
 	password = driver.find_element(By.ID, "password")
@@ -87,7 +105,7 @@ if __name__ == '__main__':
 	password.send_keys(Keys.RETURN)
 
 	driver.find_element(By.CSS_SELECTOR, 'a[title="Earn Credits"]').click()
-	print("like4like login sucessful")
+	print("login sucessful")
 
 	while True:
 
