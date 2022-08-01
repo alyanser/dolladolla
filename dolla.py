@@ -60,23 +60,29 @@ def twitter_follows():
 		print("Action completed")
 
 def twitter_likes():
+	print("twitter likes in process...")
 	pass
 
 def twitter_retweets():
+	print("twitter retweets in process...")
 	pass
 
 def insta_likes():
+	print("instagram likes in process...")
 	pass
 
 def insta_follows():
+	print("instagram follows in process...")
 	pass
 
 like_username = "testingsecondacc"
 like_password = "123123.Tt"
 
+like_url = 'https://www.like4like.org/login'
 twitter_username = "riseld02"
 twitter_password = "123123.T"
-like_url = 'https://www.like4like.org/login'
+insta_username = ""
+insta_password = ""
 
 if __name__ == '__main__':
 	print("starting the bot...")
