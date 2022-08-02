@@ -47,10 +47,10 @@ def twitter_follows():
 			# already logged in
 			pass
 
-		time.sleep(5)
+		time.sleep(2)
 		actions.send_keys(Keys.RETURN)
 		actions.perform()
-		time.sleep(5)
+		time.sleep(2)
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 
@@ -66,18 +66,33 @@ def twitter_retweets():
 		if not click_on_earn_pages_button():
 			return
 
-		driver.find_element(By.CSS_SELECTOR, 'div[aria-label="Retweet"]').click()
-		return
-
 def insta_likes():
 	print("instagram likes in process...")
 
 def insta_follows():
 	print("instagram follows in process...")
+	actions.send_keys(Keys.DOWN * 8)
+	actions.perform()
+	time.sleep(3)
+	driver.find_element(By.CSS_SELECTOR, 'a[title="Earn Credits By Instagram Follows"]').click()
+
+	while True:
+
+		if not click_on_earn_pages_button():
+			return
+
+		try:
+			username = driver.find_element(By.NAME, "name[username]")
+			password = driver.find_element(By.NAME, "name[password]")
+
+			username.send_keys(insta_username)
+			password.send_keys(insta_password)
+			password.send_keys(Keys.RETURN)
+		except:
+			pass
 
 def twitter_likes():
 	print("twitter likes in process...")
-	pass
 
 like_username = "testingsecondacc"
 like_password = "123123.Tt"
@@ -85,13 +100,14 @@ like_password = "123123.Tt"
 like_url = 'https://www.like4like.org/login'
 twitter_username = "riseld02"
 twitter_password = "123123.T"
-insta_username = ""
-insta_password = ""
+insta_username = "reallysomeone_"
+insta_password = "reallysomeone123"
 
 if __name__ == '__main__':
+	print("dolla dolla bill y'all")
 	print("starting the bot...")
 	options = webdriver.FirefoxOptions()
-	# options.add_argument("--headless")
+	options.add_argument("--headless")
 
 	driver = webdriver.Firefox(options = options)
 	driver.implicitly_wait(50)
@@ -121,10 +137,10 @@ if __name__ == '__main__':
 	while True:
 
 		try:
-			# twitter_follows()
-			twitter_retweets()
+			twitter_follows()
+			# insta_follows()
 		except KeyboardInterrupt:
 			exit(1)
 		except:
-			# print("something went wrong while performing an action. trying again")
+			driver.close()
 			raise
