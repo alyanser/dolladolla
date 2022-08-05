@@ -79,10 +79,7 @@ def like4like_login(username, password):
 	username_inp.send_keys(username)
 	password_inp.send_keys(password)
 	password_inp.send_keys(Keys.RETURN)
-
-	time.sleep(2)
-	earn_credits_button = driver.find_element(By.XPATH, '/html/body/header/div/nav/ul/li[2]/a')
-	earn_credits_button.click()
+	time.sleep(1)
 
 def twitter_follows():
 	print("twitter follows in process...")
@@ -192,16 +189,18 @@ if __name__ == '__main__':
 
 	twitter_login(username = "riseld02", password = "123123.T")
 	like4like_login(username = "testingsecondacc", password = "123123.Tt")
+	driver.get("https://www.like4like.org/user/earn-pages.php")
+
+	ops = [twitter_retweets, twitter_likes, twitter_follows]
 
 	while True:
 
-		try:
-			twitter_retweets()
-			twitter_likes()
-			twitter_follows()
-			# youtube_likes()
-		except KeyboardInterrupt:
-			exit(1)
-		except:
-			driver.quit()
-			raise
+		for i in range(len(ops)):
+
+			try:
+				ops[i]()
+			except KeyboardInterrupt:
+				exit(1)
+			except:
+				driver.get("https://www.like4like.org/user/earn-pages.php")
+				pass
