@@ -6,12 +6,25 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
+profile_dir = "firefox-profile"
+like_url = 'https://www.like4like.org'
+wait_interval = 30 # seconds
+
+like_username = "testingsecondacc"
+like_password = "123123.Tt"
+
+twitter_username = "riseld02"
+twitter_password = "123123.T"
+
+insta_username = "reallysomeone_"
+insta_password = "reallysomeone123"
+
 def click_on_earn_pages_button():
 
 	for _ in range(3):
 
 		try:
-			driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
+			driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div[2]/div[4]/div[1]/div[2]/div[1]/div/div[3]/div/div/a').click()
 			time.sleep(3)
 			driver.switch_to.window(driver.window_handles[1])
 			return True
@@ -23,23 +36,29 @@ def click_on_earn_pages_button():
 
 def click_on_confirm_button():
 
-	for _ in range(5):
+	for _ in range(3):
 
 		try:
-			driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]').click()
-			print("Action completed")
+			confirm_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div[2]/div[4]/div[1]/div[2]/div[1]/div/div[1]/a/img')
+			confirm_button.click()
+			print("action confirmed successfully")
 			return
 		except:
 			pass
 
 	print("could not click on confirm button")
+	driver.refresh()
+
+def scroll_and_click(element):
+	driver.execute_script("window.scrollBy(0, {Y})".format(Y = element.location_once_scrolled_into_view))
+	time.sleep(1)
+	element.click()
 
 def twitter_follows():
 	print("twitter follows in process...")
-	actions.send_keys(Keys.UP * 8)
-	actions.perform()
-	time.sleep(2)
-	driver.find_element(By.CSS_SELECTOR, 'a[title="Earn Credits By Twitter Follows"]').click()
+
+	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[1]')
+	scroll_and_click(twit_access_button)
 
 	while True:
 
@@ -59,49 +78,51 @@ def twitter_follows():
 			# already logged in
 			pass
 
-		time.sleep(3)
-		actions.send_keys(Keys.RETURN)
+		time.sleep(2)
+		actions.send_keys(Keys.RETURN) # emulate pressing follow button
 		actions.perform()
 		time.sleep(3)
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
-
 		click_on_confirm_button()
 
 def insta_follows():
 	print("instagram follows in process...")
-	actions.send_keys(Keys.DOWN * 8)
-	actions.perform()
-	time.sleep(2)
-	driver.find_element(By.CSS_SELECTOR, 'a[title="Earn Credits By Instagram Follows"]').click()
+
+	insta_access_button = driver.find_element(By.CSS_SELECTOR, 'a[title="Earn Credits By Instagram Follows"]')
+	scroll_and_click(insta_access_button)
 
 	while True:
 
 		if not click_on_earn_pages_button():
 			return
 
-		time.sleep(4)
-
-		# it's buggy. use CSS_SELECTOR
-		actions.send_keys(Keys.TAB * 3)
-		actions.send_keys(Keys.RETURN)
-		actions.perform()
-
-		time.sleep(4)
+		follow_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[2]/button/div/div')
+		time.sleep(2)
+		follow_button.click()
+		time.sleep(3)
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
-profile_dir = "firefox-profile"
+def youtube_likes():
+	print("youtube likes in process...")
 
-like_username = "testingsecondacc"
-like_password = "123123.Tt"
+	yt_access_button = driver.find_element(By.XPATH, '')
+	scroll_and_click(yt_access_button)
 
-like_url = 'https://www.like4like.org/login'
-twitter_username = "riseld02"
-twitter_password = "123123.T"
-insta_username = "reallysomeone_"
-insta_password = "reallysomeone123"
+	while True:
+		
+		if not click_on_earn_pages_button():
+			return
+
+		like_button = driver.find_element(By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[2]/ytd-watch-metadata/div/div[2]/div[2]/div/div/ytd-menu-renderer/div[1]/ytd-toggle-button-renderer[1]/a')
+		time.sleep(2)
+		scroll_and_click(like_button)
+		time.sleep(3)
+		driver.close()
+		driver.switch_to.window(driver.window_handles[0])
+		click_on_confirm_button()
 
 if __name__ == '__main__':
 	print("dolla dolla bill y'all")
@@ -111,33 +132,34 @@ if __name__ == '__main__':
 		mkdir(profile_dir)
 
 	options = webdriver.FirefoxOptions()
-
 	options.add_argument("--headless")
 	options.add_argument("--profile") 
 	options.add_argument(profile_dir) 
 
 	driver = webdriver.Firefox(options = options)
+	print("web-driver profile loaded")
 
-	driver.implicitly_wait(30)
+	driver.implicitly_wait(wait_interval)
 	actions = ActionChains(driver)
 
 	driver.get(like_url)
 
+	login_button = driver.find_element(By.XPATH, '/html/body/header/div/nav/ul/li[3]/a')
+	login_button.click()
+
+	username = driver.find_element(By.XPATH, '//*[@id="username"]')
+	password = driver.find_element(By.XPATH, '//*[@id="password"]')
+
+	username.clear()
+	password.clear()
+
+	username.send_keys(like_username)
+	password.send_keys(like_password)
+	password.send_keys(Keys.RETURN)
+
 	try:
-		username = driver.find_element(By.ID, "username")
-		password = driver.find_element(By.ID, "password")
-
-		username.clear()
-		password.clear()
-
-		username.send_keys(like_username)
-		password.send_keys(like_password)
-		password.send_keys(Keys.RETURN)
-	except:
-		pass
-
-	try:
-		driver.find_element(By.CSS_SELECTOR, 'a[title="Earn Credits"]').click()
+		earn_credits_button = driver.find_element(By.XPATH, '/html/body/header/div/nav/ul/li[2]/a')
+		earn_credits_button.click()
 		print("login successful")
 	except:
 		print("could not login. exiting...")
@@ -148,6 +170,7 @@ if __name__ == '__main__':
 		try:
 			twitter_follows()
 			insta_follows()
+			youtube_likes()
 		except KeyboardInterrupt:
 			exit(1)
 		except:
