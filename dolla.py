@@ -56,12 +56,12 @@ def twitter_login(username, password):
 	except:
 		pass
 
-	time.sleep(3)
-	actions.send_keys(Keys.TAB * 3)
-	actions.send_keys(username)
+	username_inp = driver.find_element(By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[5]/label/div/div[2]/div/input')
+
+	username_inp.send_keys(username)
 	actions.send_keys(Keys.RETURN)
 	actions.perform()
-	time.sleep(2)
+	time.sleep(1)
 	actions.send_keys(password)
 	actions.send_keys(Keys.RETURN)
 	actions.perform()
@@ -202,11 +202,11 @@ if __name__ == '__main__':
 	options.add_argument(profile_dir) 
 
 	driver = webdriver.Firefox(options = options)
-
 	print("web-driver profile loaded")
 
-	driver.implicitly_wait(10)
+	driver.implicitly_wait(5)
 	driver.fullscreen_window()
+
 	actions = ActionChains(driver)
 
 	twitter_login(username = "riseld02", password = "123123.T")
@@ -231,6 +231,6 @@ if __name__ == '__main__':
 				driver.quit()
 				exit(1)
 			except:
-				# maybe close existing windows first
+				driver.quit()
 				driver.get(earn_pages_url)
 				pass
