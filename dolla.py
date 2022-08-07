@@ -26,15 +26,15 @@ def click_on_confirm_button():
 	for _ in range(3):
 
 		try:
-			confirm_button = driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]')
-			confirm_button.click()
+			driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]').click()
 			print("action confirmed successfully")
-			return
+			return True
 		except:
 			pass
 
 	print("could not click on confirm button")
 	driver.refresh()
+	return False
 
 def scroll_into_view(element):
 	dest = element.location_once_scrolled_into_view
@@ -80,6 +80,15 @@ def like4like_login(username, password):
 	password_inp.send_keys(password)
 	password_inp.send_keys(Keys.RETURN)
 	time.sleep(1)
+	return
+
+	try:
+		captcha = driver.find_element(By.XPATH, '')
+		print("captcha detected. solve it to continue (continuing in 30 seconds)")
+		captcha.click()
+		time.sleep(30)
+	except:
+		return
 
 def twitter_follows():
 	print("twitter follows in process...")
@@ -189,9 +198,15 @@ if __name__ == '__main__':
 
 	twitter_login(username = "riseld02", password = "123123.T")
 	like4like_login(username = "testingsecondacc", password = "123123.Tt")
-	driver.get("https://www.like4like.org/user/earn-pages.php")
 
-	ops = [twitter_retweets, twitter_likes, twitter_follows]
+	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
+	driver.get(earn_pages_url)
+
+	if driver.current_url != earn_pages_url:
+		print("like4like login failed.")
+		exit(1)
+
+	ops = [twitter_follows, twitter_likes, twitter_retweets]
 
 	while True:
 
