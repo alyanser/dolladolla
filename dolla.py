@@ -104,7 +104,7 @@ def twitter_follows():
 		time.sleep(2)
 		actions.send_keys(Keys.RETURN) # emulate pressing follow button
 		actions.perform()
-		time.sleep(2)
+		time.sleep(3)
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
@@ -121,7 +121,10 @@ def twitter_retweets():
 		if not click_on_earn_pages_button():
 			return
 
-		retweet_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[2]/div/div/div')
+		try:
+			retweet_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[2]/div/div/div')
+		except:
+			retweet_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[2]/div/div/div')
 
 		scroll_into_view(retweet_button)
 		actions.send_keys(Keys.UP * 3) # hacky but what can you do
@@ -130,7 +133,7 @@ def twitter_retweets():
 		retweet_button.click()
 		actions.send_keys(Keys.RETURN)
 		actions.perform()
-		time.sleep(2)
+		time.sleep(3)
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
@@ -146,13 +149,17 @@ def twitter_likes():
 		if not click_on_earn_pages_button():
 			return
 
-		like_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[3]/div/div/div')
+		try:
+			like_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[3]/div/div/div')
+		except:
+			like_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[3]/div/div/div')
+
 		scroll_into_view(like_button)
-		actions.send_keys(Keys.UP * 3) # hacky but what can you do
+		actions.send_keys(Keys.UP * 3)
 		actions.perform()
 		time.sleep(1)
 		like_button.click()
-		time.sleep(2)
+		time.sleep(3)
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
@@ -217,5 +224,6 @@ if __name__ == '__main__':
 			except KeyboardInterrupt:
 				exit(1)
 			except:
+				# maybe close existing windows first
 				driver.get("https://www.like4like.org/user/earn-pages.php")
 				pass
