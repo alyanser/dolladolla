@@ -167,8 +167,8 @@ def twitter_likes():
 def youtube_likes():
 	print("youtube likes in process...")
 
-	yt_access_button = driver.find_element(By.XPATH, '')
-	scroll_into_view(yt_access_button)
+	yt_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[2]/a[1]')
+	yt_access_button.click()
 
 	while True:
 		
@@ -176,8 +176,10 @@ def youtube_likes():
 			return
 
 		like_button = driver.find_element(By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[2]/ytd-watch-metadata/div/div[2]/div[2]/div/div/ytd-menu-renderer/div[1]/ytd-toggle-button-renderer[1]/a')
-		time.sleep(2)
+
 		scroll_into_view(like_button)
+		time.sleep(1)
+		like_button.click()
 		time.sleep(3)
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
@@ -198,9 +200,11 @@ if __name__ == '__main__':
 	options.add_argument(profile_dir) 
 
 	driver = webdriver.Firefox(options = options)
+
 	print("web-driver profile loaded")
 
-	driver.implicitly_wait(20)
+	driver.set_window_size(1280, 720) # use os or smth
+	driver.implicitly_wait(10)
 	actions = ActionChains(driver)
 
 	twitter_login(username = "riseld02", password = "123123.T")
