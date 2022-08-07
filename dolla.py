@@ -8,7 +8,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 def click_on_earn_pages_button():
 
-	for _ in range(3):
+	for _ in range(2):
 
 		try:
 			driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
@@ -23,7 +23,7 @@ def click_on_earn_pages_button():
 
 def click_on_confirm_button():
 
-	for _ in range(3):
+	for _ in range(2):
 
 		try:
 			driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]').click()
@@ -51,16 +51,17 @@ def twitter_login(username, password):
 
 	try:
 		_ = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div[2]/header/div/div/div/div[1]/div[3]/a/div/span/div/div/span/span")
+		print("already logged into twitter")
 		return
 	except:
 		pass
 
 	time.sleep(3)
-	actions.send_keys(Keys.TAB * 4)
+	actions.send_keys(Keys.TAB * 3)
 	actions.send_keys(username)
 	actions.send_keys(Keys.RETURN)
 	actions.perform()
-	time.sleep(1)
+	time.sleep(2)
 	actions.send_keys(password)
 	actions.send_keys(Keys.RETURN)
 	actions.perform()
@@ -79,7 +80,8 @@ def like4like_login(username, password):
 	username_inp.send_keys(username)
 	password_inp.send_keys(password)
 	password_inp.send_keys(Keys.RETURN)
-	time.sleep(1)
+	time.sleep(3)
+	print("logged into like4like")
 	return
 
 	try:
@@ -152,7 +154,7 @@ def twitter_likes():
 		try:
 			like_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[3]/div/div/div')
 		except:
-			like_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[3]/div/div/div')
+			like_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[3]/div/div/div')
 
 		scroll_into_view(like_button)
 		actions.send_keys(Keys.UP * 3)
@@ -203,8 +205,8 @@ if __name__ == '__main__':
 
 	print("web-driver profile loaded")
 
-	driver.set_window_size(1280, 720) # use os or smth
 	driver.implicitly_wait(10)
+	driver.fullscreen_window()
 	actions = ActionChains(driver)
 
 	twitter_login(username = "riseld02", password = "123123.T")
@@ -226,8 +228,9 @@ if __name__ == '__main__':
 			try:
 				ops[i]()
 			except KeyboardInterrupt:
+				driver.quit()
 				exit(1)
 			except:
 				# maybe close existing windows first
-				driver.get("https://www.like4like.org/user/earn-pages.php")
+				driver.get(earn_pages_url)
 				pass
