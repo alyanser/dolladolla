@@ -72,6 +72,17 @@ def twitter_login(username, password):
 	time.sleep(3)
 	print(INFO + "logged into twitter")
 
+def get_credits():
+	html = driver.find_element(By.CLASS_NAME, "earned-credits").get_attribute("outerHTML")
+	s = ""
+
+	for c in html:
+
+		if c.isdigit():
+			s += c
+
+	return int(s)
+
 def like4like_login(username, password):
 
 	print(INFO + "logging into like4like")
@@ -112,6 +123,7 @@ def twitter_follows():
 
 	while True:
 		cur_credits = get_credits()
+
 		if not click_on_earn_pages_button():
 			return
 
@@ -134,17 +146,6 @@ def twitter_follows():
 			print(ERROR + "action failed")
 			twitter_follows.fails = twitter_follows.fails + 1
 
-def get_credits():
-	html = driver.find_element(By.CLASS_NAME, "earned-credits").get_attribute("outerHTML")
-	s = ""
-
-	for c in html:
-
-		if c.isdigit():
-			s += c
-
-	return int(s)
-
 def twitter_retweets():
 
 	if twitter_retweets.fails == 3:
@@ -158,6 +159,7 @@ def twitter_retweets():
 
 	while True:
 		cur_credits = get_credits()
+
 		print("current credits : ", cur_credits)
 
 		if not click_on_earn_pages_button():
@@ -193,7 +195,7 @@ def twitter_retweets():
 
 def twitter_likes():
 
-	if twitter_retweets.fails == 3:
+	if twitter_likes.fails == 3:
 		print(WARNING + "could not initiate twitter likes because of high failure count")
 		return
           		
@@ -201,8 +203,6 @@ def twitter_likes():
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[3]')
 	twit_access_button.click()
-
-	get_credits()
 
 	while True:
 		cur_credits = get_credits()
@@ -239,7 +239,7 @@ def twitter_likes():
 def youtube_likes():
 
 	if youtube_likes.fails == 3:
-		print(WARNING + "could not initiate youtube likes because of high failure 	count")
+		print(WARNING + "could not initiate youtube likes because of high failure count")
 		return
 		
 	print(INFO + "youtube likes in process...")
@@ -248,7 +248,8 @@ def youtube_likes():
 	yt_access_button.click()
 
 	while True:
-		cur_credits = get_credits()	
+		cur_credits = get_credits()
+
 		if not click_on_earn_pages_button():
 			return
 
@@ -287,9 +288,10 @@ if __name__ == '__main__':
 		mkdir(profile_dir)
 
 	options = webdriver.FirefoxOptions()
-	options.add_argument("--headless")
 
+	options.add_argument("--headless")
 	options.add_argument("--profile") 
+		
 	options.add_argument(profile_dir) 
 
 	driver = webdriver.Firefox(options = options)
@@ -311,8 +313,7 @@ if __name__ == '__main__':
 	twitter_follows.fails = 0
 	youtube_likes.fails = 0
 
-	# ops = [twitter_likes, twitter_retweets, twitter_follows]
-	ops = [twitter_retweets]
+	ops = [twitter_likes, twitter_retweets, twitter_follows]
 
 	while True:
 
