@@ -19,6 +19,7 @@ def click_on_earn_pages_button():
 			driver.refresh()
 
 	driver.back()
+	print(ERROR + "could not click on earn_pages button. the current action cannot be performed anymore")
 	return False
 
 def click_on_confirm_button():
@@ -27,12 +28,12 @@ def click_on_confirm_button():
 
 		try:
 			driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]').click()
-			print("action confirmed successfully")
+			print(INFO + "action confirmed")
 			return True
 		except:
 			pass
 
-	print("could not click on confirm button")
+	print(ERROR + "could not click on confirm button")
 	driver.refresh()
 	return False
 
@@ -46,12 +47,12 @@ def scroll_into_view(element):
 	time.sleep(1)
 
 def twitter_login(username, password):
-	print("logging into twitter")
+	print(INFO + "logging into twitter")
 	driver.get("https://www.twitter.com/login")
 
 	try:
 		_ = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div[2]/header/div/div/div/div[1]/div[3]/a/div/span/div/div/span/span")
-		print("already logged into twitter")
+		print(INFO + "already logged into twitter")
 		return
 	except:
 		pass
@@ -66,10 +67,10 @@ def twitter_login(username, password):
 	actions.send_keys(Keys.RETURN)
 	actions.perform()
 	_ = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div[2]/header/div/div/div/div[1]/div[3]/a/div/span/div/div/span/span")
-	print("logged into twitter")
+	print(INFO + "logged into twitter")
 
 def like4like_login(username, password):
-	print("logging into like4like")
+	print(INFO + "logging into like4like")
 	login_url = 'https://www.like4like.org/login'
 	driver.get("https://www.like4like.org/login")
 
@@ -86,23 +87,21 @@ def like4like_login(username, password):
 
 	try:
 		_ = driver.find_element(By.XPATH, '//*[@id="message"]')
-		print("catpcha deteceted while logging into like4like. solve it to continue. (DO NOT LOGIN)")
-		print("will automatically proceed in 30 seconds")
+		print(WARNING + "catpcha deteceted while logging into like4like. solve it to continue")
+		print(INFO + "will automatically proceed in 30 seconds")
 
 		time.sleep(30)
-		submit_button.click()
-		time.sleep(3)
 	except:
 		pass
 
 	if driver.current_url == login_url:
-		print("could not login into like4like")
+		print(ERROR + "could not login into like4like")
 		exit(1)
 	else:
-		print("logged into like4like")
+		print(INFO + "logged into like4like")
 
 def twitter_follows():
-	print("twitter follows in process...")
+	print(INFO + "twitter follows in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[1]')
 	twit_access_button.click()
@@ -121,7 +120,7 @@ def twitter_follows():
 		click_on_confirm_button()
 
 def twitter_retweets():
-	print("twitter retweets in process...")
+	print(INFO + "twitter retweets in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[2]')
 
@@ -150,7 +149,7 @@ def twitter_retweets():
 		click_on_confirm_button()
 
 def twitter_likes():
-	print("twitter likes in process...")
+	print(INFO + "twitter likes in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[3]')
 	twit_access_button.click()
@@ -176,7 +175,7 @@ def twitter_likes():
 		click_on_confirm_button()
 
 def youtube_likes():
-	print("youtube likes in process...")
+	print(INFO + "youtube likes in process...")
 
 	yt_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[2]/a[1]')
 	yt_access_button.click()
@@ -197,8 +196,12 @@ def youtube_likes():
 		click_on_confirm_button()
 
 if __name__ == '__main__':
-	print("dolla dolla bill y'all")
-	print("starting the bot...")
+	WARNING = "[WARNING] "
+	INFO = "[INFO] "
+	ERROR = "[ERROR] "
+
+	print("dolla dolla bill y'all\n" + '-' * 30)
+	print(INFO + "starting the bot...")
 
 	profile_dir = "firefox-profile"
 
@@ -211,9 +214,9 @@ if __name__ == '__main__':
 	options.add_argument(profile_dir) 
 
 	driver = webdriver.Firefox(options = options)
-	print("web-driver profile loaded")
+	print(INFO + "web-driver profile loaded")
 
-	driver.implicitly_wait(1000)
+	driver.implicitly_wait(20)
 	driver.fullscreen_window()
 
 	actions = ActionChains(driver)
@@ -243,5 +246,5 @@ if __name__ == '__main__':
 						driver.get(earn_pages_url)
 						break
 					except:
-						print("could not load like4like.com. check your connection. retrying in 60 seconds")
+						print(ERROR + "could not load like4like.com. check your connection. retrying in 60 seconds")
 						time.sleep(60)
