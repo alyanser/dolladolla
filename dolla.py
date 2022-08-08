@@ -8,7 +8,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 def click_on_earn_pages_button():
 
-	for _ in range(2):
+	for _ in range(5):
 
 		try:
 			driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
@@ -23,7 +23,7 @@ def click_on_earn_pages_button():
 
 def click_on_confirm_button():
 
-	for _ in range(2):
+	for _ in range(5):
 
 		try:
 			driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]').click()
@@ -82,15 +82,6 @@ def like4like_login(username, password):
 	password_inp.send_keys(Keys.RETURN)
 	time.sleep(3)
 	print("logged into like4like")
-	return
-
-	try:
-		captcha = driver.find_element(By.XPATH, '')
-		print("captcha detected. solve it to continue (continuing in 30 seconds)")
-		captcha.click()
-		time.sleep(30)
-	except:
-		return
 
 def twitter_follows():
 	print("twitter follows in process...")
@@ -204,7 +195,7 @@ if __name__ == '__main__':
 	driver = webdriver.Firefox(options = options)
 	print("web-driver profile loaded")
 
-	driver.implicitly_wait(5)
+	driver.implicitly_wait(15)
 	driver.fullscreen_window()
 
 	actions = ActionChains(driver)
@@ -231,6 +222,12 @@ if __name__ == '__main__':
 				driver.quit()
 				exit(1)
 			except:
-				driver.quit()
-				driver.get(earn_pages_url)
-				pass
+
+				while True:
+
+					try:
+						driver.get(earn_pages_url)
+						break
+					except:
+						print("could not load like4like. check your connection. retrying in 60 seconds")
+						time.sleep(60)
