@@ -48,7 +48,6 @@ def scroll_into_view(element):
 	time.sleep(1)
 
 def twitter_login(username, password):
-	
 	print(INFO + "logging into twitter")
 	driver.get("https://www.twitter.com/login")
 
@@ -84,7 +83,6 @@ def get_credits():
 	return int(s)
 
 def like4like_login(username, password):
-
 	print(INFO + "logging into like4like")
 
 	login_url = 'https://www.like4like.org/login'
@@ -112,7 +110,7 @@ def like4like_login(username, password):
 
 def twitter_follows():
 
-	if twitter_follows.fails == 3:
+	if twitter_follows.fails == fail_limit:
 		print(WARNING + "could not initiate twitter follows because of high failure count")
 		return
 		
@@ -145,10 +143,11 @@ def twitter_follows():
 		else:
 			print(ERROR + "action failed")
 			twitter_follows.fails = twitter_follows.fails + 1
+			return
 
 def twitter_retweets():
 
-	if twitter_retweets.fails == 3:
+	if twitter_retweets.fails == fail_limit:
 		print(WARNING + "could not initiate twitter retweets because of high failure count")
 		return
 
@@ -192,10 +191,11 @@ def twitter_retweets():
 		else:
 			print(ERROR + "action failed")
 			twitter_retweets.fails = twitter_retweets.fails + 1
+			return
 
 def twitter_likes():
 
-	if twitter_likes.fails == 3:
+	if twitter_likes.fails == fail_limit:
 		print(WARNING + "could not initiate twitter likes because of high failure count")
 		return
           		
@@ -235,6 +235,7 @@ def twitter_likes():
 		else:
 			print(ERROR + "action failed")
 			twitter_likes.fails = twitter_likes.fails + 1
+			return
 
 def youtube_likes():
 
@@ -308,6 +309,7 @@ if __name__ == '__main__':
 	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
 	driver.get(earn_pages_url)
 
+	fail_limit = 3
 	twitter_likes.fails = 0
 	twitter_retweets.fails = 0
 	twitter_follows.fails = 0
@@ -332,5 +334,5 @@ if __name__ == '__main__':
 						driver.get(earn_pages_url)
 						break
 					except:
-						print(ERROR + "could not load like4like.com. check your connection. retrying in 60 seconds")
+						print(ERROR + "could not load like4like.com. check your connection. retrying in 60 seconds...")
 						time.sleep(60)
