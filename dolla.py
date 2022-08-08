@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import time
 from os.path import exists
 from os import mkdir
@@ -8,7 +10,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 def click_on_earn_pages_button():
 
-	for _ in range(5):
+	for _ in range(3):
 
 		try:
 			driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
@@ -24,11 +26,10 @@ def click_on_earn_pages_button():
 
 def click_on_confirm_button():
 
-	for _ in range(5):
+	for _ in range(3):
 
 		try:
 			driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]').click()
-			print(INFO + "action confirmed")
 			return True
 		except:
 			pass
@@ -67,12 +68,14 @@ def twitter_login(username, password):
 	actions.send_keys(Keys.RETURN)
 	actions.perform()
 	_ = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div[2]/header/div/div/div/div[1]/div[3]/a/div/span/div/div/span/span")
+	time.sleep(3)
 	print(INFO + "logged into twitter")
 
 def like4like_login(username, password):
 	print(INFO + "logging into like4like")
+
 	login_url = 'https://www.like4like.org/login'
-	driver.get("https://www.like4like.org/login")
+	driver.get(login_url)
 
 	username_inp = driver.find_element(By.XPATH, '//*[@id="username"]')
 	password_inp = driver.find_element(By.XPATH, '//*[@id="password"]')
@@ -84,21 +87,15 @@ def like4like_login(username, password):
 	username_inp.send_keys(username)
 	password_inp.send_keys(password)
 	submit_button.click()
+	time.sleep(5)
 
-	try:
-		_ = driver.find_element(By.XPATH, '//*[@id="message"]')
-		print(WARNING + "catpcha deteceted while logging into like4like. solve it to continue")
+	while driver.current_url == login_url:
+		print(WARNING + "catpcha detected while logging into like4like. login after solving it to continue")
 		print(INFO + "will automatically proceed in 30 seconds")
-
 		time.sleep(30)
-	except:
-		pass
+		print(INFO + "continuing...")
 
-	if driver.current_url == login_url:
-		print(ERROR + "could not login into like4like")
-		exit(1)
-	else:
-		print(INFO + "logged into like4like")
+	print(INFO + "logged into like4like")
 
 def twitter_follows():
 	print(INFO + "twitter follows in process...")
@@ -119,14 +116,31 @@ def twitter_follows():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
+def get_credits():
+	html = driver.find_element(By.CLASS_NAME, "earned-credits").get_attribute("outerHTML")
+	s = ""
+
+	for c in html:
+
+		if c.isdigit():
+			s += c
+
+	return int(s)
+
 def twitter_retweets():
+
+	if twitter_retweets.fails == 3:
+		print(WARNING + "could not initiate twitter retweets because of high failure count")
+		return
+
 	print(INFO + "twitter retweets in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[2]')
-
 	twit_access_button.click()
 
 	while True:
+		cur_credits = get_credits()
+		print("current credits : ", cur_credits)
 
 		if not click_on_earn_pages_button():
 			return
@@ -137,7 +151,7 @@ def twitter_retweets():
 			retweet_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[2]/div/div/div')
 
 		scroll_into_view(retweet_button)
-		actions.send_keys(Keys.UP * 3) # hacky but what can you do
+		actions.send_keys(Keys.UP * 3)
 		actions.perform()
 		time.sleep(1)
 		retweet_button.click()
@@ -148,11 +162,24 @@ def twitter_retweets():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
+		time.sleep(3)
+
+		upd_credits = get_credits()
+		print("updated credits : ", upd_credits)
+
+		if upd_credits > cur_credits:
+			print(INFO + "action completed")
+		else:
+			print(ERROR + "action failed")
+			twitter_retweets.fails = twitter_retweets.fails + 1
+
 def twitter_likes():
 	print(INFO + "twitter likes in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[3]')
 	twit_access_button.click()
+
+	get_credits()
 
 	while True:
 
@@ -210,13 +237,14 @@ if __name__ == '__main__':
 
 	options = webdriver.FirefoxOptions()
 	options.add_argument("--headless")
+
 	options.add_argument("--profile") 
 	options.add_argument(profile_dir) 
 
 	driver = webdriver.Firefox(options = options)
 	print(INFO + "web-driver profile loaded")
 
-	driver.implicitly_wait(20)
+	driver.implicitly_wait(15)
 	driver.fullscreen_window()
 
 	actions = ActionChains(driver)
@@ -227,7 +255,12 @@ if __name__ == '__main__':
 	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
 	driver.get(earn_pages_url)
 
-	ops = [twitter_follows, twitter_likes, twitter_retweets]
+	twitter_likes.fails = 0
+	twitter_retweets.fails = 0
+	twitter_follows.fails = 0
+
+	# ops = [twitter_likes, twitter_retweets, twitter_follows]
+	ops = [twitter_retweets]
 
 	while True:
 
