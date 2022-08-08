@@ -48,6 +48,7 @@ def scroll_into_view(element):
 	time.sleep(1)
 
 def twitter_login(username, password):
+	
 	print(INFO + "logging into twitter")
 	driver.get("https://www.twitter.com/login")
 
@@ -72,6 +73,7 @@ def twitter_login(username, password):
 	print(INFO + "logged into twitter")
 
 def like4like_login(username, password):
+
 	print(INFO + "logging into like4like")
 
 	login_url = 'https://www.like4like.org/login'
@@ -98,13 +100,18 @@ def like4like_login(username, password):
 	print(INFO + "logged into like4like")
 
 def twitter_follows():
+
+	if twitter_follows.fails == 3:
+		print(WARNING + "could not initiate twitter follows because of high failure count")
+		return
+		
 	print(INFO + "twitter follows in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[1]')
 	twit_access_button.click()
 
 	while True:
-
+		cur_credits = get_credits()
 		if not click_on_earn_pages_button():
 			return
 
@@ -115,6 +122,17 @@ def twitter_follows():
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
+		
+		time.sleep(3)
+
+		upd_credits = get_credits()
+		print("updated credits : ", upd_credits)
+
+		if upd_credits > cur_credits:
+			print(INFO + "action completed")
+		else:
+			print(ERROR + "action failed")
+			twitter_follows.fails = twitter_follows.fails + 1
 
 def get_credits():
 	html = driver.find_element(By.CLASS_NAME, "earned-credits").get_attribute("outerHTML")
@@ -174,6 +192,11 @@ def twitter_retweets():
 			twitter_retweets.fails = twitter_retweets.fails + 1
 
 def twitter_likes():
+
+	if twitter_retweets.fails == 3:
+		print(WARNING + "could not initiate twitter likes because of high failure count")
+		return
+          		
 	print(INFO + "twitter likes in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[3]')
@@ -182,6 +205,7 @@ def twitter_likes():
 	get_credits()
 
 	while True:
+		cur_credits = get_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -200,15 +224,31 @@ def twitter_likes():
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
+		
+		time.sleep(3)
+
+		upd_credits = get_credits()
+		print("updated credits : ", upd_credits)
+
+		if upd_credits > cur_credits:
+			print(INFO + "action completed")
+		else:
+			print(ERROR + "action failed")
+			twitter_likes.fails = twitter_likes.fails + 1
 
 def youtube_likes():
+
+	if youtube_likes.fails == 3:
+		print(WARNING + "could not initiate youtube likes because of high failure 	count")
+		return
+		
 	print(INFO + "youtube likes in process...")
 
 	yt_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[2]/a[1]')
 	yt_access_button.click()
 
 	while True:
-		
+		cur_credits = get_credits()	
 		if not click_on_earn_pages_button():
 			return
 
@@ -221,6 +261,17 @@ def youtube_likes():
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
+		
+		time.sleep(3)
+
+		upd_credits = get_credits()
+		print("updated credits : ", upd_credits)
+
+		if upd_credits > cur_credits:
+			print(INFO + "action completed")
+		else:
+			print(ERROR + "action failed")
+			youtube_likes.fails = youtube_likes.fails + 1
 
 if __name__ == '__main__':
 	WARNING = "[WARNING] "
@@ -258,6 +309,7 @@ if __name__ == '__main__':
 	twitter_likes.fails = 0
 	twitter_retweets.fails = 0
 	twitter_follows.fails = 0
+	youtube_likes.fails = 0
 
 	# ops = [twitter_likes, twitter_retweets, twitter_follows]
 	ops = [twitter_retweets]
