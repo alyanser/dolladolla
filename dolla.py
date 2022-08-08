@@ -70,18 +70,36 @@ def twitter_login(username, password):
 
 def like4like_login(username, password):
 	print("logging into like4like")
+	login_url = 'https://www.like4like.org/login'
 	driver.get("https://www.like4like.org/login")
+
 	username_inp = driver.find_element(By.XPATH, '//*[@id="username"]')
 	password_inp = driver.find_element(By.XPATH, '//*[@id="password"]')
+	submit_button = driver.find_element(By.XPATH, '/html/body/div[6]/form/fieldset/table/tbody/tr[8]/td/span')
 
 	username_inp.clear()
 	password_inp.clear()
 
 	username_inp.send_keys(username)
 	password_inp.send_keys(password)
-	password_inp.send_keys(Keys.RETURN)
-	time.sleep(3)
-	print("logged into like4like")
+	submit_button.click()
+
+	try:
+		_ = driver.find_element(By.XPATH, '//*[@id="message"]')
+		print("catpcha deteceted while logging into like4like. solve it to continue. (DO NOT LOGIN)")
+		print("will automatically proceed in 30 seconds")
+
+		time.sleep(30)
+		submit_button.click()
+		time.sleep(3)
+	except:
+		pass
+
+	if driver.current_url == login_url:
+		print("could not login into like4like")
+		exit(1)
+	else:
+		print("logged into like4like")
 
 def twitter_follows():
 	print("twitter follows in process...")
@@ -95,7 +113,7 @@ def twitter_follows():
 			return
 
 		time.sleep(2)
-		actions.send_keys(Keys.RETURN) # emulate pressing follow button
+		actions.send_keys(Keys.RETURN)
 		actions.perform()
 		time.sleep(3)
 		driver.close()
@@ -195,7 +213,7 @@ if __name__ == '__main__':
 	driver = webdriver.Firefox(options = options)
 	print("web-driver profile loaded")
 
-	driver.implicitly_wait(15)
+	driver.implicitly_wait(1000)
 	driver.fullscreen_window()
 
 	actions = ActionChains(driver)
@@ -205,10 +223,6 @@ if __name__ == '__main__':
 
 	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
 	driver.get(earn_pages_url)
-
-	if driver.current_url != earn_pages_url:
-		print("like4like login failed.")
-		exit(1)
 
 	ops = [twitter_follows, twitter_likes, twitter_retweets]
 
@@ -229,5 +243,5 @@ if __name__ == '__main__':
 						driver.get(earn_pages_url)
 						break
 					except:
-						print("could not load like4like. check your connection. retrying in 60 seconds")
+						print("could not load like4like.com. check your connection. retrying in 60 seconds")
 						time.sleep(60)
