@@ -145,6 +145,7 @@ def twitter_follows():
 		click_on_confirm_button()
 
 		if validate_submission():
+			time.sleep(2)
 			print(INFO + "credits earned :", get_credits() - cur_credits)
 			time.sleep(3)
 		else:
@@ -228,6 +229,7 @@ def twitter_likes():
 		click_on_confirm_button()
 
 		if validate_submission():
+			time.sleep(2)
 			print(INFO + "credits earned :", get_credits() - cur_credits)
 			time.sleep(3)
 		else:
@@ -263,6 +265,7 @@ def twitch_follows():
 		click_on_confirm_button()
 
 		if validate_submission():
+			time.sleep(2)
 			print(INFO + "credits earned :", get_credits() - cur_credits)
 			time.sleep(3)
 		else:
@@ -271,7 +274,7 @@ def twitch_follows():
 
 def youtube_likes():
 
-	if youtube_likes.fails == 3:
+	if youtube_likes.fails == fail_cnt:
 		print(WARNING + "could not initiate youtube likes because of high failure count")
 		return
 		
@@ -356,7 +359,7 @@ if __name__ == '__main__':
 
 	actions = ActionChains(driver)
 
-	twitter_login(username = twitter_username, password = twitter_password)
+	twitter_login(username = creds["twitter_username"], password = creds["twitter_password"])
 	like4like_login(username = creds["like4like_username"], password = creds["like4like_password"])
 
 	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
