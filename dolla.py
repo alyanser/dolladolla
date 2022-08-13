@@ -133,7 +133,7 @@ def twitter_follows():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 		
-		time.sleep(3)
+		time.sleep(5)
 
 		upd_credits = get_credits()
 		print("updated credits : ", upd_credits)
@@ -141,8 +141,8 @@ def twitter_follows():
 		if upd_credits > cur_credits:
 			print(INFO + "action completed")
 		else:
-			print(ERROR + "action failed")
 			twitter_follows.fails = twitter_follows.fails + 1
+			print(ERROR + "action failed. failure count :", twitter_follows.fails)
 			return
 
 def twitter_retweets():
@@ -152,6 +152,7 @@ def twitter_retweets():
 		return
 
 	print(INFO + "twitter retweets in process...")
+	print("something that's worth mentioning is that something is not working out loud right fucking no")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[2]')
 	twit_access_button.click()
@@ -181,7 +182,7 @@ def twitter_retweets():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
-		time.sleep(3)
+		time.sleep(5)
 
 		upd_credits = get_credits()
 		print("updated credits : ", upd_credits)
@@ -189,8 +190,8 @@ def twitter_retweets():
 		if upd_credits > cur_credits:
 			print(INFO + "action completed")
 		else:
-			print(ERROR + "action failed")
 			twitter_retweets.fails = twitter_retweets.fails + 1
+			print(ERROR + "action failed. failure count : ", twitter_retweets.fails)
 			return
 
 def twitter_likes():
@@ -198,7 +199,7 @@ def twitter_likes():
 	if twitter_likes.fails == fail_limit:
 		print(WARNING + "could not initiate twitter likes because of high failure count")
 		return
-          		
+			
 	print(INFO + "twitter likes in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[3]')
@@ -225,7 +226,7 @@ def twitter_likes():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 		
-		time.sleep(3)
+		time.sleep(5)
 
 		upd_credits = get_credits()
 		print("updated credits : ", upd_credits)
@@ -233,8 +234,8 @@ def twitter_likes():
 		if upd_credits > cur_credits:
 			print(INFO + "action completed")
 		else:
-			print(ERROR + "action failed")
 			twitter_likes.fails = twitter_likes.fails + 1
+			print(ERROR + "action failed. failure count : ", twitter_likes.fails)
 			return
 
 def youtube_likes():
@@ -275,12 +276,31 @@ def youtube_likes():
 			print(ERROR + "action failed")
 			youtube_likes.fails = youtube_likes.fails + 1
 
+def read_credentials():
+	print("reading the credentials...")
+
+	with open(".creds.ini", "r") as file:
+		twitter_username = file.readline()
+		twitter_password = file.readline()
+		like4like_username = file.readline()
+		like4like_password = file.readline()
+
+	print("credentials read successfully")
+	return twitter_username, twitter_password, like4like_username, like4like_password
+
 if __name__ == '__main__':
 	WARNING = "[WARNING] "
 	INFO = "[INFO] "
 	ERROR = "[ERROR] "
 
-	print("dolla dolla bill y'all\n" + '-' * 30)
+	print("*" * 30 + "\ndolla dolla bill y'all\n" + '-' * 30)
+
+	try:
+		twitter_username, twitter_password, like4like_username, like4like_password = read_credentials()
+	except:
+		print("could not read the credentials. cannot proceed. exiting...")
+		exit(1)
+
 	print(INFO + "starting the bot...")
 
 	profile_dir = "firefox-profile"
@@ -292,7 +312,6 @@ if __name__ == '__main__':
 
 	options.add_argument("--headless")
 	options.add_argument("--profile") 
-		
 	options.add_argument(profile_dir) 
 
 	driver = webdriver.Firefox(options = options)
@@ -303,13 +322,13 @@ if __name__ == '__main__':
 
 	actions = ActionChains(driver)
 
-	twitter_login(username = "riseld02", password = "123123.T")
-	like4like_login(username = "testingsecondacc", password = "123123.Tt")
+	twitter_login(username = twitter_username, password = twitter_password)
+	like4like_login(username = like4like_username, password = like4like_password)
 
 	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
 	driver.get(earn_pages_url)
 
-	fail_limit = 3
+	fail_limit = 5
 	twitter_likes.fails = 0
 	twitter_retweets.fails = 0
 	twitter_follows.fails = 0
