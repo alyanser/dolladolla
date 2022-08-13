@@ -108,6 +108,16 @@ def like4like_login(username, password):
 
 	print(INFO + "logged into like4like")
 
+def validate_submission():
+
+	try:
+		_ = driver.find_element(By.XPATH, '//*[@id="top-header-earned-credits"]')
+		return True
+	except:
+		print(WARNING + "action failed")
+
+	return False
+
 def twitter_follows():
 
 	if twitter_follows.fails == fail_limit:
@@ -125,24 +135,19 @@ def twitter_follows():
 		if not click_on_earn_pages_button():
 			return
 
-		time.sleep(2)
+		time.sleep(5)
 		actions.send_keys(Keys.RETURN)
 		actions.perform()
-		time.sleep(3)
+		time.sleep(5)
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
-		
-		time.sleep(5)
 
-		upd_credits = get_credits()
-		print("updated credits : ", upd_credits)
-
-		if upd_credits > cur_credits:
-			print(INFO + "action completed")
+		if validate_submission():
+			print(INFO + "credits earned :", get_credits() - cur_credits)
+			time.sleep(3)
 		else:
 			twitter_follows.fails = twitter_follows.fails + 1
-			print(ERROR + "action failed. failure count :", twitter_follows.fails)
 			return
 
 def twitter_retweets():
@@ -152,15 +157,12 @@ def twitter_retweets():
 		return
 
 	print(INFO + "twitter retweets in process...")
-	print("something that's worth mentioning is that something is not working out loud right fucking no")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[2]')
 	twit_access_button.click()
 
 	while True:
 		cur_credits = get_credits()
-
-		print("current credits : ", cur_credits)
 
 		if not click_on_earn_pages_button():
 			return
@@ -182,16 +184,11 @@ def twitter_retweets():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
-		time.sleep(5)
-
-		upd_credits = get_credits()
-		print("updated credits : ", upd_credits)
-
-		if upd_credits > cur_credits:
-			print(INFO + "action completed")
+		if validate_submission():
+			print(INFO + "credits earned :", get_credits() - cur_credits)
+			time.sleep(3)
 		else:
-			twitter_retweets.fails = twitter_retweets.fails + 1
-			print(ERROR + "action failed. failure count : ", twitter_retweets.fails)
+			twitter_follows.fails = twitter_follows.fails + 1
 			return
 
 def twitter_likes():
@@ -225,17 +222,12 @@ def twitter_likes():
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
-		
-		time.sleep(5)
 
-		upd_credits = get_credits()
-		print("updated credits : ", upd_credits)
-
-		if upd_credits > cur_credits:
-			print(INFO + "action completed")
+		if validate_submission():
+			print(INFO + "credits earned :", get_credits() - cur_credits)
+			time.sleep(3)
 		else:
-			twitter_likes.fails = twitter_likes.fails + 1
-			print(ERROR + "action failed. failure count : ", twitter_likes.fails)
+			twitter_follows.fails = twitter_follows.fails + 1
 			return
 
 def youtube_likes():
@@ -311,13 +303,13 @@ if __name__ == '__main__':
 	options = webdriver.FirefoxOptions()
 
 	options.add_argument("--headless")
-	options.add_argument("--profile") 
+	options.add_argument("--profile")
 	options.add_argument(profile_dir) 
 
 	driver = webdriver.Firefox(options = options)
 	print(INFO + "web-driver profile loaded")
 
-	driver.implicitly_wait(15)
+	driver.implicitly_wait(10)
 	driver.fullscreen_window()
 
 	actions = ActionChains(driver)
@@ -328,7 +320,7 @@ if __name__ == '__main__':
 	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
 	driver.get(earn_pages_url)
 
-	fail_limit = 5
+	fail_limit = 3
 	twitter_likes.fails = 0
 	twitter_retweets.fails = 0
 	twitter_follows.fails = 0
