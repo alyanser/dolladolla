@@ -127,6 +127,7 @@ def twitter_follows():
 	print(INFO + "twitter follows in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[1]')
+	scroll_into_view(twit_access_button)
 	twit_access_button.click()
 
 	while True:
@@ -159,6 +160,7 @@ def twitter_retweets():
 	print(INFO + "twitter retweets in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[2]')
+	scroll_into_view(twit_access_button)
 	twit_access_button.click()
 
 	while True:
@@ -185,6 +187,7 @@ def twitter_retweets():
 		click_on_confirm_button()
 
 		if validate_submission():
+			time.sleep(2)
 			print(INFO + "credits earned :", get_credits() - cur_credits)
 			time.sleep(3)
 		else:
@@ -200,6 +203,7 @@ def twitter_likes():
 	print(INFO + "twitter likes in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[3]')
+	scroll_into_view(twitter_likes)
 	twit_access_button.click()
 
 	while True:
@@ -230,6 +234,41 @@ def twitter_likes():
 			twitter_follows.fails = twitter_follows.fails + 1
 			return
 
+def twitch_follows():
+
+	if twitch_follows.fails == fail_limit:
+		print(WARNING + "could not initiate twitch follows because of high failure count")
+		return
+			
+	print(INFO + "twitch follows in process...")
+
+	twitch_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[15]/a')
+	scroll_into_view(twitch_access_button)
+	twitch_access_button.click()
+
+	while True:
+		cur_credits = get_credits()
+
+		if not click_on_earn_pages_button():
+			return
+
+		follow_button = driver.find_element(By.CSS_SELECTOR, 'button[data-a-target="follow-button"]')
+		scroll_into_view(follow_button)
+		time.sleep(5)
+		follow_button.click()
+		time.sleep(3)
+
+		driver.close()
+		driver.switch_to.window(driver.window_handles[0])
+		click_on_confirm_button()
+
+		if validate_submission():
+			print(INFO + "credits earned :", get_credits() - cur_credits)
+			time.sleep(3)
+		else:
+			twitch_follows.fails = twitch_follows.fails + 1
+			return
+
 def youtube_likes():
 
 	if youtube_likes.fails == 3:
@@ -239,6 +278,7 @@ def youtube_likes():
 	print(INFO + "youtube likes in process...")
 
 	yt_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[2]/a[1]')
+	scroll_into_view(yt_access_button)
 	yt_access_button.click()
 
 	while True:
@@ -271,14 +311,16 @@ def youtube_likes():
 def read_credentials():
 	print("reading the credentials...")
 
+	creds = {}
+
 	with open(".creds.ini", "r") as file:
-		twitter_username = file.readline()
-		twitter_password = file.readline()
-		like4like_username = file.readline()
-		like4like_password = file.readline()
+		creds["twitter_username"] = file.readline()
+		creds["twitter_password"] = file.readline()
+		creds["like4like_username"] = file.readline()
+		creds["like4like_password"] = file.readline()
 
 	print("credentials read successfully")
-	return twitter_username, twitter_password, like4like_username, like4like_password
+	return creds
 
 if __name__ == '__main__':
 	WARNING = "[WARNING] "
@@ -288,7 +330,7 @@ if __name__ == '__main__':
 	print("*" * 30 + "\ndolla dolla bill y'all\n" + '-' * 30)
 
 	try:
-		twitter_username, twitter_password, like4like_username, like4like_password = read_credentials()
+		creds = read_credentials()
 	except:
 		print("could not read the credentials. cannot proceed. exiting...")
 		exit(1)
@@ -315,7 +357,7 @@ if __name__ == '__main__':
 	actions = ActionChains(driver)
 
 	twitter_login(username = twitter_username, password = twitter_password)
-	like4like_login(username = like4like_username, password = like4like_password)
+	like4like_login(username = creds["like4like_username"], password = creds["like4like_password"])
 
 	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
 	driver.get(earn_pages_url)
@@ -324,9 +366,10 @@ if __name__ == '__main__':
 	twitter_likes.fails = 0
 	twitter_retweets.fails = 0
 	twitter_follows.fails = 0
+	twitch_follows.fails = 0
 	youtube_likes.fails = 0
 
-	ops = [twitter_likes, twitter_retweets, twitter_follows]
+	ops = [twitch_follows, twitter_likes, twitter_retweets, twitter_follows]
 
 	while True:
 
