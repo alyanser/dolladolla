@@ -45,7 +45,7 @@ def scroll_into_view(element):
 		raise Exception("dict is null somehow")
 
 	driver.execute_script("window.scrollBy({X}, {Y})".format(X = dest["x"], Y = dest["y"]))
-	time.sleep(1)
+	time.sleep(2)
 
 def twitter_login(username, password):
 	print(INFO + "logging into twitter")
@@ -272,7 +272,7 @@ def twitch_follows():
 
 		follow_button = driver.find_element(By.CSS_SELECTOR, 'button[data-a-target="follow-button"]')
 		scroll_into_view(follow_button)
-		time.sleep(5)
+		time.sleep(3)
 		follow_button.click()
 		time.sleep(3)
 
@@ -289,44 +289,43 @@ def twitch_follows():
 			print(INFO + "total credits : ", get_credits())
 			return
 
-def youtube_likes():
+def soundcloud_follows():
 
-	if youtube_likes.fails == fail_limit:
-		print(WARNING + "could not initiate youtube likes because of high failure count")
+	if soundcloud_follows.fails == fail_limit:
+		print(WARNING + "could not initiate soundcloud follows because of high failure count")
 		return
-		
-	print(INFO + "youtube likes in process...")
+			
+	print(INFO + "soundcloud follows in process...")
 
-	yt_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[2]/a[1]')
-	scroll_into_view(yt_access_button)
-	yt_access_button.click()
+	soundcloud_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[6]/a[2]')
+	scroll_into_view(soundcloud_access_button)
+	soundcloud_access_button.click()
 
 	while True:
 		cur_credits = get_credits()
 
 		if not click_on_earn_pages_button():
+			print(INFO + "total credits : ", get_credits())
 			return
 
-		like_button = driver.find_element(By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[2]/ytd-watch-metadata/div/div[2]/div[2]/div/div/ytd-menu-renderer/div[1]/ytd-toggle-button-renderer[1]/a')
-
-		scroll_into_view(like_button)
-		time.sleep(1)
-		like_button.click()
+		follow_button = driver.find_element(By.CLASS_NAME, 'sc-button-follow')
+		scroll_into_view(follow_button)
 		time.sleep(3)
+		follow_button.click()
+		time.sleep(3)
+
 		driver.close()
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
-		
-		time.sleep(3)
 
-		upd_credits = get_credits()
-		print("updated credits : ", upd_credits)
-
-		if upd_credits > cur_credits:
-			print(INFO + "action completed")
+		if validate_submission():
+			time.sleep(2)
+			print(INFO + "credits earned :", get_credits() - cur_credits)
+			time.sleep(3)
 		else:
-			print(ERROR + "action failed")
-			youtube_likes.fails = youtube_likes.fails + 1
+			soundcloud_follows.fails = soundcloud_follows.fails + 1
+			print(INFO + "total credits : ", get_credits())
+			return
 
 def read_credentials():
 	print("reading the credentials...")
@@ -371,7 +370,7 @@ if __name__ == '__main__':
 	driver = webdriver.Firefox(options = options)
 	print(INFO + "web-driver profile loaded")
 
-	driver.implicitly_wait(10)
+	driver.implicitly_wait(15)
 	driver.fullscreen_window()
 
 	actions = ActionChains(driver)
@@ -382,14 +381,14 @@ if __name__ == '__main__':
 	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
 	driver.get(earn_pages_url)
 
-	fail_limit = 3
+	fail_limit = 5
 	twitter_likes.fails = 0
 	twitter_retweets.fails = 0
 	twitter_follows.fails = 0
 	twitch_follows.fails = 0
-	youtube_likes.fails = 0
+	soundcloud_follows.fails = 0
 
-	ops = [twitter_likes, twitter_retweets, twitter_follows, twitch_follows]
+	ops = [soundcloud_follows, twitter_likes, twitter_retweets, twitter_follows, twitch_follows]
 
 	while True:
 
