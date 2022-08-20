@@ -128,7 +128,7 @@ def instagram_login(username, password):
 	time.sleep(1)
 	actions.send_keys(Keys.ENTER)
 	actions.perform()
-	_ = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[1]/section/main/div[1]/section/div[3]/div[1]/div/div/div[2]/div/div/div/a")
+	_ = driver.find_element(By.XPATH, "/html/body/div[1]/section/main/div/div/div/div/button")
 	print(INFO + "logged into instagram")
 
 
@@ -146,26 +146,18 @@ def get_credits():
 def like4like_login(username, password):
 	print(INFO + "logging into like4like")
 
-	login_url = 'https://www.like4like.org/login'
+	login_url = 'https://www.like4like.org/login/'
 	driver.get(login_url)
-
-	try:
-		_ = driver.find_element(By.XPATH, "/html/body/div[2]/div[4]/div[1]/div[1]")
-		print(WARNING + "THERES A CAPTCHAAAAAAAAAA GO FAST")
-		time.sleep(30)
-	except:
-		pass
 
 	username_inp = driver.find_element(By.XPATH, '//*[@id="username"]')
 	password_inp = driver.find_element(By.XPATH, '//*[@id="password"]')
-	submit_button = driver.find_element(By.XPATH, '/html/body/div[6]/form/fieldset/table/tbody/tr[8]/td/span')
 
 	username_inp.clear()
 	password_inp.clear()
 
 	username_inp.send_keys(username)
 	password_inp.send_keys(password)
-	submit_button.click()
+	password_inp.send_keys(Keys.ENTER)
 	time.sleep(5)
 
 	while driver.current_url == login_url:
