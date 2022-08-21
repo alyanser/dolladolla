@@ -9,19 +9,15 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 def click_on_earn_pages_button():
 
-	for _ in range(2):
-
-		try:
-			driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
-			time.sleep(2)
-			driver.switch_to.window(driver.window_handles[1])
-			return True
-		except:
-			driver.refresh()
-
-	driver.back()
-	print(ERROR + "could not click on earn_pages button. the current action cannot be performed anymore")
-	return False
+	try:
+		driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
+		time.sleep(2)
+		driver.switch_to.window(driver.window_handles[1])
+		return True
+	except:
+		driver.back()
+		print(ERROR + "could not click on earn_pages button. the current action cannot be performed")
+		return False
 
 def click_on_confirm_button():
 
@@ -78,7 +74,7 @@ def youtube_login(username, password):
 	time.sleep(3)
 	print(INFO + " logged into gooogle im not sure check")
 
-def get_credits():
+def get_current_credits():
 
 	try:
 		html = driver.find_element(By.CLASS_NAME, "earned-credits").get_attribute("outerHTML")
@@ -106,25 +102,19 @@ def validate_submission():
 		return False
 
 def twitter_follows():
-
-	if twitter_follows.fails == fail_limit:
-		print(WARNING + "could not initiate twitter follows because of high failure count")
-		return
-		
 	print(INFO + "twitter follows in process...")
 
-	twitf_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[1]')
-	scroll_into_view(twitf_access_button)
+	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[1]')
+	scroll_into_view(twit_access_button)
 	actions.send_keys(Keys.UP * 4)
 	actions.perform()
 	time.sleep(1)
-	twitf_access_button.click()
+	twit_access_button.click()
 
 	while True:
-		cur_credits = get_credits()
+		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
-			print(INFO + "total credits : ", get_credits())
 			return
 
 		time.sleep(5)
@@ -138,11 +128,9 @@ def twitter_follows():
 
 		if validate_submission():
 			time.sleep(2)
-			print(INFO + "credits earned :", get_credits() - cur_credits)
+			print(INFO + "credits earned :", get_current_credits() - cur_credits)
 			time.sleep(3)
 		else:
-			twitter_follows.fails = twitter_follows.fails + 1
-			print(INFO + "total credits : ", get_credits())
 			return
 	
 def get_accessor(type, paths):
@@ -161,25 +149,19 @@ def get_accessor(type, paths):
 	raise Exception("could not find accessor for current action")
 
 def twitter_retweets():
-
-	if twitter_retweets.fails == fail_limit:
-		print(WARNING + "could not initiate twitter retweets because of high failure count")
-		return
-
 	print(INFO + "twitter retweets in process...")
 
-	twitr_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[2]')
-	scroll_into_view(twitr_access_button)
+	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[2]')
+	scroll_into_view(twit_access_button)
 	actions.send_keys(Keys.UP * 4)
 	actions.perform()
 	time.sleep(1)
-	twitr_access_button.click()
+	twit_access_button.click()
 
 	while True:
-		cur_credits = get_credits()
+		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
-			print(INFO + "total credits : ", get_credits())
 			return
 
 		retweet_button = get_accessor(By.XPATH, ["/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[2]/div/div/div", "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[2]/div/div/div"])
@@ -199,19 +181,12 @@ def twitter_retweets():
 
 		if validate_submission():
 			time.sleep(2)
-			print(INFO + "credits earned :", get_credits() - cur_credits)
+			print(INFO + "credits earned :", get_current_credits() - cur_credits)
 			time.sleep(3)
 		else:
-			twitter_follows.fails = twitter_follows.fails + 1
-			print(INFO + "total credits : ", get_credits())
 			return
 
 def twitter_likes():
-
-	if twitter_likes.fails == fail_limit:
-		print(WARNING + "could not initiate twitter likes because of high failure count")
-		return
-
 	print(INFO + "twitter likes in process...")
 
 	twit_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[3]')
@@ -222,10 +197,9 @@ def twitter_likes():
 	twit_access_button.click()
 
 	while True:
-		cur_credits = get_credits()
+		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
-			print(INFO + "total credits : ", get_credits())
 			return
 
 		like_button = get_accessor(By.XPATH, ["/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/section/div/div/div[2]/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[3]/div/div/div/div", "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[3]/div/div/div"])
@@ -243,19 +217,12 @@ def twitter_likes():
 
 		if validate_submission():
 			time.sleep(2)
-			print(INFO + "credits earned :", get_credits() - cur_credits)
+			print(INFO + "credits earned :", get_current_credits() - cur_credits)
 			time.sleep(3)
 		else:
-			twitter_follows.fails = twitter_follows.fails + 1
-			print(INFO + "total credits : ", get_credits())
 			return
 
 def twitch_follows():
-
-	if twitch_follows.fails == fail_limit:
-		print(WARNING + "could not initiate twitch follows because of high failure count")
-		return
-			
 	print(INFO + "twitch follows in process...")
 
 	twitch_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[15]/a')
@@ -263,13 +230,12 @@ def twitch_follows():
 	twitch_access_button.click()
 
 	while True:
-		cur_credits = get_credits()
+		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
-			print(INFO + "total credits : ", get_credits())
 			return
 
-		follow_button = get_accessor(By.XPATH, ['/html/body/div[1]/div/div[2]/div/main/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div/section/div/div/div/div/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[2]/div/div[1]/div/div/div/div/button/div/div/div/span/div'])
+		follow_button = get_accessor(By.XPATH, ['/html/body/div[1]/div/div[2]/div/main/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div/section/div/div/div/div/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[2]/div/div[1]/div/div/div/div/button/div/div/div/span/div', '/html/body/div[1]/div/div[2]/div/main/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div/section/div[2]/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/div/div/div/div/button'])
 
 		print(follow_button)
 		scroll_into_view(follow_button)
@@ -284,26 +250,19 @@ def twitch_follows():
 
 		if validate_submission():
 			time.sleep(2)
-			print(INFO + "credits earned :", get_credits() - cur_credits)
+			print(INFO + "credits earned :", get_current_credits() - cur_credits)
 			time.sleep(3)
 		else:
-			twitch_follows.fails = twitch_follows.fails + 1
-			print(INFO + "total credits : ", get_credits())
 			return
 
 def youtube_likes():
-
-	if youtube_likes.fails == fail_limit:
-		print(WARNING + "could not initiate youtube likes because of high failure count")
-		return
-		
 	print(INFO + "youtube likes in process...")
 
 	yt_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[2]/a[1]')
 	yt_access_button.click()
 
 	while True:
-		cur_credits = get_credits()
+		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -318,28 +277,22 @@ def youtube_likes():
 		click_on_confirm_button()
 		time.sleep(1)
 
-		upd_credits = get_credits()
+		upd_credits = get_current_credits()
 		print("updated credits : ", upd_credits)
 
 		if upd_credits > cur_credits:
 			print(INFO + "action completed")
 		else:
-			print(ERROR + "action failed")
-			youtube_likes.fails = youtube_likes.fails + 1
+			return
 
 def youtube_subs():
-
-	if youtube_subs.fails == fail_limit:
-		print(WARNING + "could not initiate youtube subs because of high failure count")
-		return
-
 	print(INFO + "youtube subs in process...")
 
 	yts_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[2]/a[2]')
 	yts_access_button.click()
 
 	while True:
-		cur_credits = get_credits()
+		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -357,21 +310,16 @@ def youtube_subs():
 		click_on_confirm_button()
 		time.sleep(1)
 
-		upd_credits = get_credits()
+		upd_credits = get_current_credits()
 		print("updated credits : ", upd_credits)
 
 		if upd_credits > cur_credits:
 			print(INFO + "action completed")
 		else:
 			print(ERROR + "action failed")
-			youtube_subs.fails = youtube_subs.fails + 1
+			return
 		
 def instagram_followers():
-	
-	if instagram_followers.fails == fail_limit:
-		print(WARNING + "too many failures we skipping this")
-		return
-		
 	print(INFO + "instagram followers in process...")
 
 	ig_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[7]/a[1]')
@@ -379,7 +327,7 @@ def instagram_followers():
 	ig_access_button.click()
 
 	while True:
-		cur_credits = get_credits()
+		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -394,21 +342,16 @@ def instagram_followers():
 		click_on_confirm_button()
 		time.sleep(1)
 
-		upd_credits = get_credits()
+		upd_credits = get_current_credits()
 		print("updated credits : ", upd_credits)
 
 		if upd_credits > cur_credits:
 			print(INFO + "action completed")
 		else:
 			print(ERROR + "action failed")
-			instagram_likes.fails = instagram_likes.fails + 1
+			return
 
 def instagram_likes():
-	
-	if instagram_likes.fails == fail_limit:
-		print(WARNING + "too many failures we skipping this")
-		return
-		
 	print(INFO + "instagram likes in process...")
 
 	ig_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[7]/a[2]')
@@ -416,7 +359,7 @@ def instagram_likes():
 	ig_access_button.click()
 
 	while True:
-		cur_credits = get_credits()
+		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -430,14 +373,14 @@ def instagram_likes():
 		click_on_confirm_button()
 		time.sleep(1)
 
-		upd_credits = get_credits()
+		upd_credits = get_current_credits()
 		print("updated credits : ", upd_credits)
 
 		if upd_credits > cur_credits:
 			print(INFO + "action completed")
 		else:
 			print(ERROR + "action failed")
-			instagram_likes.fails = instagram_likes.fails + 1
+			return
 
 def fetch_cookies():
 	print(INFO + "fetching cookies...")
@@ -503,15 +446,6 @@ if __name__ == '__main__':
 	driver = webdriver.Chrome(options = get_driver_options())
 	driver.implicitly_wait(10)
 	actions = ActionChains(driver)
-
-	fail_limit = 5
-	youtube_subs.fails = 0
-	youtube_likes.fails = 0
-	twitter_likes.fails = 0
-	twitter_retweets.fails = 0
-	twitter_follows.fails = 0
-	instagram_likes.fails = 0
-	twitch_follows.fails = 0
 
 	ops = fetch_cookies()
 
