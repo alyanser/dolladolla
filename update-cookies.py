@@ -66,6 +66,20 @@ def twitter_login(username, password):
 	_ = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div[2]/header/div/div/div/div[1]/div[3]/a/div/span/div/div/span/span")
 	print(INFO + "logged into twitter")
 
+def twitch_login(username, password):
+	print(INFO + "logging into twitch.tv...")
+	driver.get("https://www.twitch.tv/login")
+
+	username_inp = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[3]/div/div/div/div[3]/form/div/div[1]/div/div[2]/input')
+	username_inp.send_keys(username)
+	actions.send_keys(Keys.TAB)
+	actions.send_keys(password)
+	actions.send_keys(Keys.RETURN)
+	actions.perform()
+
+	_ = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/nav/div/div[3]/div[5]/div[1]/div/div[1]/button/div/div[2]')
+	print(INFO + "logged into twitch.tv")
+
 def read_credentials():
 	print(INFO + "reading credentials...")
 	creds = {}
@@ -92,8 +106,10 @@ def obtain_cookies(platform):
 		login_function = twitter_login
 	elif platform == "like4like":
 		login_function = like4like_login
+	elif platform == "twitch":
+		login_function = twitch_login
 	else:
-		print("unrecognized platform : {}. cannot proceed".format(platform))
+		print(ERROR + "unrecognized platform : {}. cannot proceed".format(platform))
 		return
 
 	username_head = platform + "_username"
@@ -126,12 +142,13 @@ if __name__ == '__main__':
 
 	options = webdriver.ChromeOptions()
 	driver = webdriver.Chrome(options = options)
-	driver.implicitly_wait(15)
+	driver.implicitly_wait(100)
 	actions = webdriver.ActionChains(driver)
 
 	obtain_cookies("like4like")
 	obtain_cookies("instagram")
 	obtain_cookies("twitter")
+	obtain_cookies("twitch")
 
 	print(INFO + "closing the driver...")
 	driver.close()
