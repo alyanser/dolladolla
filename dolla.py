@@ -74,32 +74,21 @@ def youtube_login(username, password):
 	time.sleep(3)
 	print(INFO + " logged into gooogle im not sure check")
 
-def get_current_credits():
-
-	try:
-		html = driver.find_element(By.CLASS_NAME, "earned-credits").get_attribute("outerHTML")
-	except:
-		print(WARNING + "couldn't obtain current credits")
-		print(INFO + "curent url : " + driver.current_url)
-		return 0
-
-	s = ""
-
-	for c in html:
-
-		if c.isdigit():
-			s += c
-
-	return int(s)
-
 def validate_submission():
+	time.sleep(2)
 
 	try:
-		_ = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[2]/div[1]/table/tbody/tr[2]/td[1]/span[1]')
-		return True
+		header = driver.find_element(By.XPATH, '//*[@id="top-header-earned-credits"]')
+
+		if "block" in header.get_attribute("style"):
+			print(INFO + "credits earned :", header.get_attribute("innerHTML"))
+			return True
 	except:
-		print(WARNING + "action failed")
-		return False
+		pass
+
+	print(WARNING + "action failed")
+	driver.back()
+	return False
 
 def twitter_follows():
 	print(INFO + "twitter follows in process...")
@@ -112,7 +101,6 @@ def twitter_follows():
 	twit_access_button.click()
 
 	while True:
-		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -126,11 +114,7 @@ def twitter_follows():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
-		if validate_submission():
-			time.sleep(2)
-			print(INFO + "credits earned :", get_current_credits() - cur_credits)
-			time.sleep(3)
-		else:
+		if not validate_submission():
 			return
 	
 def get_accessor(type, paths):
@@ -159,7 +143,6 @@ def twitter_retweets():
 	twit_access_button.click()
 
 	while True:
-		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -179,11 +162,7 @@ def twitter_retweets():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
-		if validate_submission():
-			time.sleep(2)
-			print(INFO + "credits earned :", get_current_credits() - cur_credits)
-			time.sleep(3)
-		else:
+		if not validate_submission():
 			return
 
 def twitter_likes():
@@ -197,7 +176,6 @@ def twitter_likes():
 	twit_access_button.click()
 
 	while True:
-		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -215,11 +193,7 @@ def twitter_likes():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
-		if validate_submission():
-			time.sleep(2)
-			print(INFO + "credits earned :", get_current_credits() - cur_credits)
-			time.sleep(3)
-		else:
+		if not validate_submission():
 			return
 
 def twitch_follows():
@@ -230,7 +204,6 @@ def twitch_follows():
 	twitch_access_button.click()
 
 	while True:
-		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -248,11 +221,7 @@ def twitch_follows():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
-		if validate_submission():
-			time.sleep(2)
-			print(INFO + "credits earned :", get_current_credits() - cur_credits)
-			time.sleep(3)
-		else:
+		if not validate_submission():
 			return
 
 def youtube_likes():
@@ -262,7 +231,6 @@ def youtube_likes():
 	yt_access_button.click()
 
 	while True:
-		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -277,14 +245,6 @@ def youtube_likes():
 		click_on_confirm_button()
 		time.sleep(1)
 
-		upd_credits = get_current_credits()
-		print("updated credits : ", upd_credits)
-
-		if upd_credits > cur_credits:
-			print(INFO + "action completed")
-		else:
-			return
-
 def youtube_subs():
 	print(INFO + "youtube subs in process...")
 
@@ -292,7 +252,6 @@ def youtube_subs():
 	yts_access_button.click()
 
 	while True:
-		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -309,15 +268,6 @@ def youtube_subs():
 		time.sleep(2)
 		click_on_confirm_button()
 		time.sleep(1)
-
-		upd_credits = get_current_credits()
-		print("updated credits : ", upd_credits)
-
-		if upd_credits > cur_credits:
-			print(INFO + "action completed")
-		else:
-			print(ERROR + "action failed")
-			return
 		
 def instagram_followers():
 	print(INFO + "instagram followers in process...")
@@ -327,7 +277,6 @@ def instagram_followers():
 	ig_access_button.click()
 
 	while True:
-		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -342,15 +291,6 @@ def instagram_followers():
 		click_on_confirm_button()
 		time.sleep(1)
 
-		upd_credits = get_current_credits()
-		print("updated credits : ", upd_credits)
-
-		if upd_credits > cur_credits:
-			print(INFO + "action completed")
-		else:
-			print(ERROR + "action failed")
-			return
-
 def instagram_likes():
 	print(INFO + "instagram likes in process...")
 
@@ -359,7 +299,6 @@ def instagram_likes():
 	ig_access_button.click()
 
 	while True:
-		cur_credits = get_current_credits()
 
 		if not click_on_earn_pages_button():
 			return
@@ -372,15 +311,6 @@ def instagram_likes():
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 		time.sleep(1)
-
-		upd_credits = get_current_credits()
-		print("updated credits : ", upd_credits)
-
-		if upd_credits > cur_credits:
-			print(INFO + "action completed")
-		else:
-			print(ERROR + "action failed")
-			return
 
 def fetch_cookies():
 	print(INFO + "fetching cookies...")
@@ -407,17 +337,17 @@ def fetch_cookies():
 
 	allowed_ops = []
 
-	driver.get("https://twitch.tv")
+	# driver.get("https://twitch.tv")
 
-	if get_spec_cookies(".twitch"):
-		allowed_ops.append(twitch_follows)
+	# if get_spec_cookies(".twitch"):
+	# 	allowed_ops.append(twitch_follows)
 
 	driver.get("https://twitter.com")
 
 	if get_spec_cookies(".twitter"):
-		allowed_ops.append(twitter_likes)
-		allowed_ops.append(twitter_retweets)
 		allowed_ops.append(twitter_follows)
+		allowed_ops.append(twitter_retweets)
+		allowed_ops.append(twitter_likes)
 
 	# driver.get("https://instagram.com")
 
@@ -430,7 +360,7 @@ def fetch_cookies():
 def get_driver_options():
 	options = webdriver.ChromeOptions()
 
-	# options.add_argument("--headless")
+	options.add_argument("--headless")
 	# options.add_argument("--kiosk")
 
 	return options
@@ -444,7 +374,7 @@ if __name__ == '__main__':
 	print(INFO + "starting the bot...")
 
 	driver = webdriver.Chrome(options = get_driver_options())
-	driver.implicitly_wait(10)
+	driver.implicitly_wait(15)
 	actions = ActionChains(driver)
 
 	ops = fetch_cookies()
