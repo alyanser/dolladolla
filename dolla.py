@@ -9,7 +9,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 def click_on_earn_pages_button():
 
-	for _ in range(3):
+	for _ in range(2):
 
 		try:
 			driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
@@ -25,17 +25,13 @@ def click_on_earn_pages_button():
 
 def click_on_confirm_button():
 
-	for _ in range(3):
-
-		try:
-			driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]').click()
-			return True
-		except:
-			pass
-
-	print(ERROR + "could not click on confirm button")
-	driver.refresh()
-	return False
+	try:
+		driver.find_element(By.CSS_SELECTOR, 'img[title="Click On The Button To Confirm Interaction!"]').click()
+		return True
+	except:
+		print(ERROR + "could not click on confirm button")
+		driver.refresh()
+		return False
 
 def scroll_into_view(element):
 	dest = element.location_once_scrolled_into_view
@@ -149,9 +145,9 @@ def twitter_follows():
 			print(INFO + "total credits : ", get_credits())
 			return
 	
-def get_accessor(possible_paths):
+def get_accessor(type, paths):
 
-	for type, path in possible_paths.items():
+	for path in paths:
 
 		try:
 			accessor = driver.find_element(type, path)
@@ -162,7 +158,6 @@ def get_accessor(possible_paths):
 	assert len(driver.window_handles) == 2
 	driver.close()
 	driver.switch_to.window(driver.window_handles[0])
-	print(ERROR + "could not find accessor for current action")
 	raise Exception("could not find accessor for current action")
 
 def twitter_retweets():
@@ -187,10 +182,7 @@ def twitter_retweets():
 			print(INFO + "total credits : ", get_credits())
 			return
 
-		retweet_button = get_accessor({
-			By.XPATH : "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[2]/div/div/div",
-			By.XPATH : "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[2]/div/div/div"
-			})
+		retweet_button = get_accessor(By.XPATH, ["/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[2]/div/div/div", "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[2]/div/div/div"])
 
 		scroll_into_view(retweet_button)
 		actions.send_keys(Keys.UP * 3)
@@ -236,10 +228,7 @@ def twitter_likes():
 			print(INFO + "total credits : ", get_credits())
 			return
 
-		like_button = get_accessor({
-			By.XPATH : "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[3]/div/div/div",
-			By.XPATH : "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[3]/div/div/div"
-			})
+		like_button = get_accessor(By.XPATH, ["/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/section/div/div/div[2]/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[3]/div/div/div/div", "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[3]/div/div/div"])
 
 		scroll_into_view(like_button)
 		actions.send_keys(Keys.UP * 3)
@@ -280,7 +269,7 @@ def twitch_follows():
 			print(INFO + "total credits : ", get_credits())
 			return
 
-		follow_button = get_accessor({By.XPATH : '/html/body/div[1]/div/div[2]/div/main/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div/section/div/div/div/div/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[2]/div/div[1]/div/div/div/div/button/div/div/div/span/div'})
+		follow_button = get_accessor(By.XPATH, ['/html/body/div[1]/div/div[2]/div/main/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div/section/div/div/div/div/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[2]/div/div[1]/div/div/div/div/button/div/div/div/span/div'])
 
 		print(follow_button)
 		scroll_into_view(follow_button)
@@ -475,17 +464,17 @@ def fetch_cookies():
 
 	allowed_ops = []
 
-	# driver.get("https://twitch.tv")
- #
-	# if get_spec_cookies(".twitch"):
-	# 	allowed_ops.append(twitch_follows)
+	driver.get("https://twitch.tv")
+
+	if get_spec_cookies(".twitch"):
+		allowed_ops.append(twitch_follows)
 
 	driver.get("https://twitter.com")
 
 	if get_spec_cookies(".twitter"):
-		allowed_ops.append(twitter_follows)
 		allowed_ops.append(twitter_likes)
 		allowed_ops.append(twitter_retweets)
+		allowed_ops.append(twitter_follows)
 
 	# driver.get("https://instagram.com")
 
@@ -512,7 +501,7 @@ if __name__ == '__main__':
 	print(INFO + "starting the bot...")
 
 	driver = webdriver.Chrome(options = get_driver_options())
-	driver.implicitly_wait(1000)
+	driver.implicitly_wait(10)
 	actions = ActionChains(driver)
 
 	fail_limit = 5
@@ -549,7 +538,8 @@ if __name__ == '__main__':
 			except KeyboardInterrupt:
 				driver.quit()
 				exit(1)
-			except:
+			except Exception as e:
+				print(ERROR + str(e))
 
 				while True:
 
