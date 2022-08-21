@@ -478,6 +478,11 @@ def fetch_cookies():
 
 	allowed_ops = []
 
+	driver.get("https://twitch.tv")
+
+	if get_spec_cookies(".twitch"):
+		allowed_ops.append(twitch_follows)
+
 	driver.get("https://twitter.com")
 
 	if get_spec_cookies(".twitter"):
@@ -490,7 +495,7 @@ def fetch_cookies():
 	if get_spec_cookies(".instagram"):
 		allowed_ops.append(instagram_likes)
 		allowed_ops.append(instagram_followers)
-	
+
 	return allowed_ops
 
 def get_driver_options():
@@ -520,6 +525,7 @@ if __name__ == '__main__':
 	twitter_retweets.fails = 0
 	twitter_follows.fails = 0
 	instagram_likes.fails = 0
+	twitch_follows.fails = 0
 
 	ops = fetch_cookies()
 
