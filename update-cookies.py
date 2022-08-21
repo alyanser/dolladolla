@@ -63,7 +63,7 @@ def twitter_login(username, password):
 	actions.send_keys(Keys.RETURN)
 	actions.perform()
 
-	_ = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div[2]/header/div/div/div/div[1]/div[3]/a/div/span/div/div/span/span")
+	_ = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div/div[2]/div/div/div/div")
 	print(INFO + "logged into twitter")
 
 def twitch_login(username, password):
@@ -140,9 +140,8 @@ if __name__ == '__main__':
 		print(ERROR + "could not read credentials. exiting...")
 		exit(1)
 
-	options = webdriver.ChromeOptions()
-	driver = webdriver.Chrome(options = options)
-	driver.implicitly_wait(100)
+	driver = webdriver.Chrome()
+	driver.implicitly_wait(15)
 	actions = webdriver.ActionChains(driver)
 
 	obtain_cookies("like4like")
