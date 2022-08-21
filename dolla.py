@@ -36,7 +36,7 @@ def scroll_into_view(element):
 		raise Exception("dict is null somehow")
 
 	driver.execute_script("window.scrollBy({X}, {Y})".format(X = dest["x"], Y = dest["y"]))
-	time.sleep(1)
+	time.sleep(2)
 
 def youtube_login(username, password):
 	print(INFO + "logging into youtube")
@@ -233,7 +233,9 @@ def youtube_likes():
 	while True:
 
 		if not click_on_earn_pages_button():
+			print(INFO + "total credits : ", get_credits())
 			return
+
 
 		like_button = driver.find_element(By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[2]/div[7]/div[1]/div[2]/ytd-video-primary-info-renderer/div/div/div[3]/div/ytd-menu-renderer/div[1]/ytd-toggle-button-renderer[1]/a/yt-icon-button/button/yt-icon')
 		time.sleep(3)
@@ -306,16 +308,27 @@ def instagram_likes():
 		like_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[1]/div/div/div/div[1]/div[1]/section/main/div[1]/div[1]/article/div/div[2]/div/div[2]/section[1]/span[1]/button/div[2]/span/svg/path')
 		like_button.click()
 		time.sleep(5)
+
 		driver.close()
 		time.sleep(2)
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
+
 		time.sleep(1)
 
 def fetch_cookies():
 	print(INFO + "fetching cookies...")
 
 	def get_spec_cookies(filename):
+
+		if validate_submission():
+			time.sleep(2)
+			print(INFO + "credits earned :", get_credits() - cur_credits)
+			time.sleep(3)
+		else:
+			soundcloud_follows.fails = soundcloud_follows.fails + 1
+			print(INFO + "total credits : ", get_credits())
+			return
 
 		try:
 			print(INFO + "adding {} cookies".format(filename))
@@ -372,6 +385,8 @@ if __name__ == '__main__':
 
 	print("-" * 30 + "\ndolla dolla bill y'all\n" + '-' * 30)
 	print(INFO + "starting the bot...")
+	driver.implicitly_wait(15)
+	driver.fullscreen_window()
 
 	driver = webdriver.Chrome(options = get_driver_options())
 	driver.implicitly_wait(15)
