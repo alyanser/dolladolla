@@ -77,6 +77,8 @@ def twitch_login(username, password):
 	actions.send_keys(Keys.RETURN)
 	actions.perform()
 
+	input("Press ENTER after solving captcha/verifiying email to continue...")
+
 	_ = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/nav/div/div[3]/div[5]/div[1]/div/div[1]/button/div/div[2]')
 	print(INFO + "logged into twitch.tv")
 
