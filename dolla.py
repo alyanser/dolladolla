@@ -180,7 +180,7 @@ def twitter_likes():
 		if not click_on_earn_pages_button():
 			return
 
-		like_button = get_accessor(By.XPATH, ["/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/section/div/div/div[2]/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[3]/div/div/div/div", "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/section/div/div/div/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[3]/div/div/div"])
+		like_button = get_accessor(By.XPATH, ["/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/section/div/div/div[1]/div/div/div[1]/article/div/div/div/div[3]/div[7]/div/div[3]/div/div/div", "/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/section/div/div/div[1]/div/div/div[1]/article/div/div/div/div[3]/div[8]/div/div[3]/div/div/div"])
 
 		scroll_into_view(like_button)
 		actions.send_keys(Keys.UP * 3)
@@ -345,9 +345,9 @@ def fetch_cookies():
 	driver.get("https://twitter.com")
 
 	if get_spec_cookies(".twitter"):
+		allowed_ops.append(twitter_likes)
 		allowed_ops.append(twitter_follows)
 		allowed_ops.append(twitter_retweets)
-		allowed_ops.append(twitter_likes)
 
 	# driver.get("https://instagram.com")
 
