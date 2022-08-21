@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 import time
-from os.path import exists
-from os import mkdir
+import pickle
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -14,7 +13,7 @@ def click_on_earn_pages_button():
 
 		try:
 			driver.find_element(By.CSS_SELECTOR, '.earn_pages_button').click()
-			time.sleep(1)
+			time.sleep(2)
 			driver.switch_to.window(driver.window_handles[1])
 			return True
 		except:
@@ -64,6 +63,7 @@ def youtube_login(username, password):
 	actions.send_keys(Keys.ENTER)
 	actions.perform()
 	driver.implicitly_wait(20)
+
 	try:
 		_ = driver.find_element(By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[4]/div[2]/div/div[1]/div/div[1]/input")
 		print(INFO + "FUCK a captcha came")
@@ -81,30 +81,6 @@ def youtube_login(username, password):
 	_ = driver.find_element(By.XPATH, "/html/body/ytd-app/div[1]/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-topbar-menu-button-renderer[1]/div/a/yt-icon-button/button/yt-icon")
 	time.sleep(3)
 	print(INFO + " logged into gooogle im not sure check")
-
-def twitter_login(username, password):
-	print(INFO + "logging into twitter")
-	driver.get("https://www.twitter.com/login")
-
-	try:
-		_ = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div[2]/header/div/div/div/div[1]/div[3]/a/div/span/div/div/span/span")
-		print(INFO + "already logged into twitter")
-		return
-	except:
-		pass
-
-	username_inp = driver.find_element(By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[5]/label/div/div[2]/div/input')
-
-	username_inp.send_keys(username)
-	actions.send_keys(Keys.RETURN)
-	actions.perform()
-	time.sleep(1)
-	actions.send_keys(password)
-	actions.send_keys(Keys.RETURN)
-	actions.perform()
-	_ = driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div[2]/header/div/div/div/div[1]/div[3]/a/div/span/div/div/span/span")
-	time.sleep(3)
-	print(INFO + "logged into twitter")
 
 def instagram_login(username, password):
 	print(INFO + "logging into instagram")
@@ -143,35 +119,10 @@ def get_credits():
 
 	return int(s)
 
-def like4like_login(username, password):
-	print(INFO + "logging into like4like")
-
-	login_url = 'https://www.like4like.org/login/'
-	driver.get(login_url)
-
-	username_inp = driver.find_element(By.XPATH, '//*[@id="username"]')
-	password_inp = driver.find_element(By.XPATH, '//*[@id="password"]')
-
-	username_inp.clear()
-	password_inp.clear()
-
-	username_inp.send_keys(username)
-	password_inp.send_keys(password)
-	password_inp.send_keys(Keys.ENTER)
-	time.sleep(5)
-
-	while driver.current_url == login_url:
-		print(WARNING + "catpcha detected while logging into like4like. login after solving it to continue")
-		print(INFO + "will automatically proceed in 30 seconds")
-		time.sleep(30)
-		print(INFO + "continuing...")
-
-	print(INFO + "logged into like4like")
-
 def validate_submission():
 
 	try:
-		_ = driver.find_element(By.XPATH, '//*[@id="top-header-earned-credits"]')
+		_ = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[2]/div[1]/table/tbody/tr[2]/td[1]/span[1]')
 		return True
 	except:
 		print(WARNING + "action failed")
@@ -205,6 +156,7 @@ def twitter_follows():
 		actions.perform()
 		time.sleep(5)
 		driver.close()
+		time.sleep(2)
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
@@ -253,6 +205,7 @@ def twitter_retweets():
 		actions.perform()
 		time.sleep(3)
 		driver.close()
+		time.sleep(2)
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
@@ -270,7 +223,7 @@ def twitter_likes():
 	if twitter_likes.fails == fail_limit:
 		print(WARNING + "could not initiate twitter likes because of high failure count")
 		return
-			
+
 	print(INFO + "twitter likes in process...")
 
 	twitl_access_button = driver.find_element(By.XPATH, '/html/body/div[6]/div/div[1]/div/div/div[3]/a[3]')
@@ -295,10 +248,11 @@ def twitter_likes():
 		scroll_into_view(like_button)
 		actions.send_keys(Keys.UP * 3)
 		actions.perform()
-		time.sleep(1)
+		time.sleep(2)
 		like_button.click()
 		time.sleep(3)
 		driver.close()
+		time.sleep(2)
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
@@ -337,6 +291,7 @@ def twitch_follows():
 		time.sleep(3)
 
 		driver.close()
+		time.sleep(2)
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 
@@ -371,6 +326,7 @@ def youtube_likes():
 		like_button.click()
 		time.sleep(4)
 		driver.close()
+		time.sleep(2)
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 		time.sleep(1)
@@ -408,6 +364,7 @@ def youtube_subs():
 		actions.perform()
 		time.sleep(6)
 		driver.close()
+		time.sleep(2)
 		driver.switch_to.window(driver.window_handles[0])
 		time.sleep(2)
 		click_on_confirm_button()
@@ -418,15 +375,10 @@ def youtube_subs():
 
 		if upd_credits > cur_credits:
 			print(INFO + "action completed")
-			youtube_subs.done = youtube_subs.done + 1
 		else:
 			print(ERROR + "action failed")
 			youtube_subs.fails = youtube_subs.fails + 1
 		
-		if youtube_subs.done == 30:
-			print(WARNING + "we hit the daily limit")
-			return
-
 def instagram_followers():
 	
 	if instagram_followers.fails == fail_limit:
@@ -450,6 +402,7 @@ def instagram_followers():
 		sub_button.click()
 		time.sleep(5)
 		driver.close()
+		time.sleep(2)
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 		time.sleep(1)
@@ -459,14 +412,9 @@ def instagram_followers():
 
 		if upd_credits > cur_credits:
 			print(INFO + "action completed")
-			instagram_likes.done = instagram_likes.done + 1
 		else:
 			print(ERROR + "action failed")
 			instagram_likes.fails = instagram_likes.fails + 1
-
-		if instagram_followers.done == 15:
-			print(WARNING + "limit for likes is hit,we moving to next task")
-			return
 
 def instagram_likes():
 	
@@ -491,6 +439,7 @@ def instagram_likes():
 		like_button.click()
 		time.sleep(5)
 		driver.close()
+		time.sleep(2)
 		driver.switch_to.window(driver.window_handles[0])
 		click_on_confirm_button()
 		time.sleep(1)
@@ -500,76 +449,69 @@ def instagram_likes():
 
 		if upd_credits > cur_credits:
 			print(INFO + "action completed")
-			instagram_likes.done = instagram_likes.done + 1
 		else:
 			print(ERROR + "action failed")
 			instagram_likes.fails = instagram_likes.fails + 1
 
-		if instagram_likes.done == 50:
-			print(WARNING + "limit for likes is hit,we moving to next task")
-			return
+def fetch_cookies():
+	print(INFO + "fetching cookies...")
 
-def read_credentials():
-	print("reading the credentials...")
+	def get_spec_cookies(filename):
 
-	creds = {}
+		try:
+			print(INFO + "adding {} cookies".format(filename))
+			cookies = pickle.load(open(filename + ".pkl", "rb"))
 
-	with open(".creds.ini", "r") as file:
-		creds["youtube_username"] = file.readline()
-		creds["youtube_password"] = file.readline()
-		creds["instagram_username"] = file.readline()
-		creds["instagram_password"] = file.readline()
-		creds["twitter_username"] = file.readline()
-		creds["twitter_password"] = file.readline()
-		creds["like4like_username"] = file.readline()
-		creds["like4like_password"] = file.readline()
+			for cookie in cookies:
+				driver.add_cookie(cookie)
 
-	print("credentials read successfully")
-	return creds
+			print(INFO + "added {} cookies".format(filename))
+			return True
+		except:
+			print(WARNING + "couldn't add {} cookies".format(filename))
+			return False
+
+	driver.get("https://like4like.org/login")
+
+	if not get_spec_cookies(".like4like"):
+		raise Exception("cannot proceed anymore as like4like login failed")
+
+	allowed_ops = []
+
+	driver.get("https://twitter.com")
+
+	if get_spec_cookies(".twitter"):
+		allowed_ops.append(twitter_follows)
+		allowed_ops.append(twitter_likes)
+		allowed_ops.append(twitter_retweets)
+
+	driver.get("https://instagram.com")
+
+	if get_spec_cookies(".instagram"):
+		allowed_ops.append(instagram_likes)
+		allowed_ops.append(instagram_followers)
+	
+	return allowed_ops
+
+def get_driver_options():
+	options = webdriver.ChromeOptions()
+
+	options.add_argument("--headless")
+	# options.add_argument("--kiosk")
+
+	return options
 
 if __name__ == '__main__':
 	WARNING = "[WARNING] "
 	INFO = "[INFO] "
 	ERROR = "[ERROR] "
 
-	print("*" * 30 + "\ndolla dolla bill y'all\n" + '-' * 30)
-
-	try:
-		creds = read_credentials()
-	except:
-		print("could not read the credentials. cannot proceed. exiting...")
-		exit(1)
-
+	print("-" * 30 + "\ndolla dolla bill y'all\n" + '-' * 30)
 	print(INFO + "starting the bot...")
 
-	profile_dir = "firefox-profile"
-
-	if not exists(profile_dir):
-		mkdir(profile_dir)
-
-	options = webdriver.FirefoxOptions()
- 
-	options.add_argument("--headless")
-	options.add_argument("--profile")
-	options.add_argument(profile_dir)
-	user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
-	options.add_argument('user-agent={0}'.format(user_agent))
-
-	driver = webdriver.Firefox(options = options)
-	print(INFO + "web-driver profile loaded")
-
-	driver.implicitly_wait(10)
-	driver.fullscreen_window()
-
+	driver = webdriver.Chrome(options = get_driver_options())
+	driver.implicitly_wait(15)
 	actions = ActionChains(driver)
-
-	youtube_login(username = creds["youtube_username"], password = creds["youtube_password"])
-	instagram_login(username = creds["instagram_username"], password = creds["instagram_password"])
-	twitter_login(username = creds["twitter_username"], password = creds["twitter_password"])
-	like4like_login(username = creds["like4like_username"], password = creds["like4like_password"])
-
-	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
-	driver.get(earn_pages_url)
 
 	fail_limit = 5
 	youtube_subs.fails = 0
@@ -579,13 +521,21 @@ if __name__ == '__main__':
 	twitter_follows.fails = 0
 	instagram_likes.fails = 0
 
-	youtube_subs.done = 0
-	instagram_likes.done = 0
-	instagram_followers.done = 0
+	ops = fetch_cookies()
 
-	ops = [twitter_likes,twitter_retweets,twitter_follows,instagram_likes,youtube_subs,youtube_likes]
-	
-	
+	if len(ops) == 0:
+		print("no operation can be performed. try refreshing the cookies. exiting...")
+		exit(1)
+
+	print("-" * 30 + "\n{} performable operations : ".format(len(ops)))
+
+	for op in ops:
+		print('\t' + op.__name__)
+
+	print("-" * 30)
+
+	earn_pages_url = "https://www.like4like.org/user/earn-pages.php"
+	driver.get(earn_pages_url)
 
 	while True:
 
