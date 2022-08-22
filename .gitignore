@@ -1,5 +1,2 @@
-.creds.ini
-.instagram.pkl
-.twitter.pkl
-.like4like.pkl
-.twitch.pkl
+*.json
+*.pkl
