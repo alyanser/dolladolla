@@ -3,6 +3,7 @@
 import time
 import pickle
 from selenium import webdriver
+from os.path import exists
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -117,6 +118,10 @@ def obtain_cookies(platform):
 	username_head = platform + "_username"
 	password_head = platform + "_password"
 	cookie_filename = "." + platform
+
+	if exists(cookie_filename + ".pkl"):
+		print(INFO + "cookies for {} already exist. if you want to update them. delete {}.pkl and rerun the script".format(platform, cookie_filename))
+		return
 
 	if username_head in creds and password_head in creds:
 		print(INFO + "found {} credentials. obtaining cookies...".format(platform))
