@@ -10,7 +10,11 @@ for file in os.listdir():
 	if words[len(words) - 1] != "json":
 		continue
 
-	platform = words[1]
+	if words[0] == "www":
+		platform = words[1]
+	else:
+		platform = words[0]
+
 	print("found {} cookies. converting to pkl...".format(platform))
 
 	with open(file) as f:
