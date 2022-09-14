@@ -284,9 +284,9 @@ def fetch_cookies():
 	platforms = [
 		"like4like",
 		"youtube",
-		# "twitter",
+		"twitter",
 		"soundcloud",
-		# "twitch",
+		"twitch",
 	]
 
 	for platform in platforms:
@@ -305,7 +305,7 @@ if __name__ == '__main__':
 	print(INFO + "starting the bot...")
 
 	driver = webdriver.Chrome(options = get_driver_options())
-	driver.implicitly_wait(13)
+	driver.implicitly_wait(15)
 	actions = ActionChains(driver)
 
 	ops = fetch_cookies()
