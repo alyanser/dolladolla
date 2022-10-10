@@ -9,8 +9,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.common import exceptions
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
 def click_on_earn_pages_button(caller):
 
@@ -305,7 +306,7 @@ if __name__ == '__main__':
 	print("-" * 30 + "\ndolla dolla bill y'all\n" + '-' * 30)
 	print(INFO + "starting the bot...")
 
-	driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+	driver = webdriver.Chrome(options = get_driver_options(), service = ChromeService(ChromeDriverManager().install()))
 	driver.implicitly_wait(15)
 	actions = ActionChains(driver)
 
