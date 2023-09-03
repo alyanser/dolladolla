@@ -1,6 +1,8 @@
 # dolladolla
 Bot to automate task completion on like4like.org.
 
+## no longer maintained
+
 <i>NOTE: this is for edu purposes only. it's against like4like's TOS to use bots on their site.</i>
 
 <b>Usage:</b>
